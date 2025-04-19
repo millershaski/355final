@@ -36,6 +36,18 @@ app.use((req: Request, resp: Response, next) =>
 
     
 app.use(helmet());
+app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        styleSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    })
+  );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // parses URL-encoded payloads (useful for form submissions).
 
@@ -64,5 +76,5 @@ server.listen(port, () => console.log(`HTTP Server listening on port ${port}`));
 
 
 
-// import { ResetDatabase } from "./config/DatabaseReset"
-// ResetDatabase();
+import { ResetDatabase } from "./config/DatabaseReset"
+ResetDatabase();
