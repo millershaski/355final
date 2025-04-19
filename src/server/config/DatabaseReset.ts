@@ -1,5 +1,5 @@
 import {sequelize} from "./SequelizeInstance";
-import {Plant} from "../models/Plant";
+import {Plant} from "../models/Old_Plant";
 
 export const ResetDatabase = async () => 
 {

@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { Get404PageString } from "../FileTemplates";
-import { Plant, PlantInputData } from "../models/Plant";
+import { Plant, PlantInputData } from "../models/Old_Plant";
 import { Validator } from "../models/Validator";
 
 const router = express.Router();

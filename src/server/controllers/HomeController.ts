@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { Plant} from "../models/Plant";
+import { Plant} from "../models/Old_Plant";
 
 const router = express.Router();
 
