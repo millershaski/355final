@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () =>
 {  
     InitializeAllSaveButtons();
     InitializeAllDeleteButtons();
+    InitializeAddTaskButton();
 });
 
 
@@ -122,9 +123,6 @@ function InitializeAllDeleteButtons()
     const confirmDelete = document.getElementById("confirmDeleteButton");
     if(confirmDelete != null)
         confirmDelete.onclick = OnDeleteConfirmed;
-
-
-    console.log(allButtons.length + " : " + confirmDelete);
 }
 
 
@@ -132,7 +130,6 @@ function InitializeAllDeleteButtons()
 let selectedTaskId = 0;
 function OnDeleteTaskClicked(id)
 {
-    console.log("OnClicked: " + id);
     selectedTaskId = id;
 }
 
@@ -149,6 +146,28 @@ async function OnDeleteConfirmed()
         headers: { 'Content-Type': 'application/json' }
     });
 
+    location.reload(); // force a refresh (regardless of response)
+}
+
+
+
+function InitializeAddTaskButton()
+{
+    const addTaskButton = document.getElementById("addTaskButton");
+    if(addTaskButton != null)
+        addTaskButton.onclick = CreateTask;
+}
+
+
+
+async function CreateTask()
+{
+    await fetch(GetTargetUrlFromTaskId(""),
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    });
+    
     location.reload(); // force a refresh (regardless of response)
 }
 

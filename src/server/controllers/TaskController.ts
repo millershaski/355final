@@ -44,5 +44,23 @@ router.delete("/:id", async (req: Request, resp: Response) =>
 });
 
 
+// creates a generic new task
+router.post("/", async (req: Request, resp: Response) =>
+{
+    try 
+    {
+        console.log("Creating new task");
+
+        await Task.create({name: "New task", dueDate: new Date()});  
+        resp.status(204).send();
+    } 
+    catch (error) 
+    {
+        console.error("Error creating task:", error); 
+        resp.status(500).send("Internal Server Error"); 
+    }
+});
+
+
 
 module.exports = router;
