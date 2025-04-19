@@ -1,12 +1,13 @@
 {
-  "name": "midterm355",
+  "name": "Final Project 355",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server/Server.js",
   "scripts": {
     "server": "tsc-watch --noClear --onsuccess \"node dist/server/server.js\"",
     "client": "webpack serve",
     "start": "npm-run-all --parallel server client",
+    "simple": "tsc && node dist/server/Server.js",
     "build": "tsc --listEmittedFiles && webpack",
     "start:prod": "node dist/server/Server.js"
   },
