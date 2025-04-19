@@ -28,15 +28,19 @@ function InitializeAllSaveButtons()
 
 async function SaveTask(id)
 {
-    console.log("Saving task data: " + id);
-
     const taskData = document.getElementById("taskData"+id);
-    const response = await fetch(window.location.origin + "/task/"+id,
+    const targetUrl = window.location.origin + "/task/"+id;
+    
+    
+    console.log("Saving task data: " + id + " to " + targetUrl);
+    const response = await fetch(targetUrl,
     {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(GetAllTaskJSONData(taskData)) 
     });
+
+    console.log(response);
 }
 
 
@@ -49,7 +53,7 @@ function GetAllTaskJSONData(taskData)
     
     const data = 
     {
-        dueDate: GetElementTextContent(taskData, "dueDate"),
+        dueDate: GetElementValue(taskData, "dueDate"),
         assignee: GetElementTextContent(taskData, "assignee"),
         description: GetElementValue(taskData, "description")     
     };

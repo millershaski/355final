@@ -27,7 +27,7 @@ export class Task extends Model
             id: this.id,
             name: this.name,
             description: this.description,
-            dueDate: this.dueDate,
+            dueDate: this.ToInputSafeDate(this.dueDate),
             isComplete: this.isComplete,
 
             parentTaskId: this.parentTaskId,
@@ -36,6 +36,17 @@ export class Task extends Model
         return data;
     }
     
+
+
+    ToInputSafeDate(date: Date): string
+    {        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+          
+        return year + "-" + month + "-" + day;     
+    }
+
 
 
     // Updates this instance with data from newData, then invokes save
@@ -62,6 +73,24 @@ export class Task extends Model
         // this.allSubtasks = newData.allSubtasks;
 
         await this.save();
+    }
+
+
+
+    // for whatever reason, the timezone is not correct when we import the dates, so the day is off by one. This hacky fix should be fine in the eastern time-zone
+    FixDates()
+    {
+        this.dueDate = this.IncreaseDayByOne(this.dueDate);
+    }
+
+
+
+    IncreaseDayByOne(rawDate: Date): Date
+    {
+        let date = new Date(rawDate);
+        
+        date.setDate(date.getDate() + 1);
+        return date;
     }
 }
 

@@ -10,6 +10,7 @@ router.get("/:id", async (req: Request, resp: Response) =>
     try 
     {
         const allTasks = await Task.findAll();
+        allTasks.forEach((someTask) => someTask.FixDates());  
         const allPlainTasks = allTasks.map(task => task.GetAllHandlebarData());   
         
         resp.render("project", {allTasks: allPlainTasks});

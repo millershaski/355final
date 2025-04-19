@@ -3,7 +3,11 @@
         <div class="d-flex justify-content-between">            
             <h5 class="card-title">{{name}}</h5>
             <div class="text-end">
-                <p class="mb-1"><strong>Due Date:</strong> <a href="#" class="text-decoration-none dueDate">{{dueDate}}</a></p>
+                <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
+                    <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
+                    <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
+                </div>
+
                 <p class="mb-0"><strong>Assignee:</strong> <a href="#" class="text-decoration-none assignee">Alice Johnson</a></p>
             </div>
         </div>
