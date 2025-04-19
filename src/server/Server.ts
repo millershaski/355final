@@ -46,8 +46,9 @@ app.use(
         upgradeInsecureRequests: [],
       },
     })
-  );
+  ); // this will allow js from bootstrap
 
+  
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // parses URL-encoded payloads (useful for form submissions).
 
