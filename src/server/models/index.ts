@@ -1,5 +1,5 @@
 import {sequelize} from "../config/SequelizeInstance";
-import {Plant} from "./Plant";
+import {Plant} from "./Old_Plant";
 
 const InitializeDatabase = () => 
 {

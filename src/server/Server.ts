@@ -1,6 +1,6 @@
 /*
     Tyler Millershaski
-    CSS 355 Midterm
+    CSS 355 Final Project
 */
 
 
