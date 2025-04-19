@@ -6,9 +6,9 @@ import { Request } from "express";
 
 export class User extends Model 
 {
-    public id!: number; 
-    public name!: string;
-    public email!: string;
+    declare id: number; 
+    declare name: string;
+    declare email: string;
 
 
     // We use this method so that handlebars can correctly access the data (it can't access inherited members by default).

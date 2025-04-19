@@ -6,15 +6,15 @@ import { Request } from "express";
 
 export class Task extends Model 
 {
-    public id!: number; 
+    declare id: number; 
 
-    public name!: string;
-    public description!: string;
-    public dueDate!: Date;
-    public isComplete!: boolean;
+    declare name: string;
+    declare description: string;
+    declare dueDate: Date;
+    declare isComplete: boolean;
 
-    public parentTaskId!: number; // <= 0 is null
-    public allSubtasks!: number[]; // order stored and can be changed by user
+    declare parentTaskId: number; // <= 0 is null
+    declare allSubtasks: number[]; // order stored and can be changed by user
 
 
     // We use this method so that handlebars can correctly access the data (it can't access inherited members by default).
@@ -44,13 +44,22 @@ export class Task extends Model
         if(newData == null)
             return;
         
-        this.name = newData.name;
-        this.description = newData.description;
-        this.dueDate = newData.dueDate;
-        this.isComplete = newData.isComplete;
+        if(newData.name != null)
+            this.name = newData.name;
 
-        this.parentTaskId = newData.parentTaskId;
-        this.allSubtasks = newData.allSubtasks;
+        if(newData.description != null)
+            this.description = newData.description;
+
+        if(newData.dueDate != null)
+            this.dueDate = newData.dueDate;
+        
+        if(newData.isComplete != null)
+            this.isComplete = newData.isComplete;
+
+        if(newData.parentTaskId != null)
+            this.parentTaskId = newData.parentTaskId;
+        
+        // this.allSubtasks = newData.allSubtasks;
 
         await this.save();
     }
@@ -61,10 +70,10 @@ export class Task extends Model
 // Handles getting all input data correctly from a Request
 export class TaskInputData
 {
-    name: string = "";
-    description: string = "";
-    dueDate: Date = new Date();
-    isComplete: boolean = false;
+    name: string|undefined = "";
+    description: string|undefined = "";
+    dueDate: Date|undefined = new Date();
+    isComplete: boolean|undefined = false;
 
     parentTaskId: number = 0;
     allSubtasks: number[] = [];
@@ -79,7 +88,7 @@ export class TaskInputData
         {
             this.name = this.GetString("name", req);
             this.description = this.GetString("description", req);
-            this.dueDate = new Date(this.GetString("dueDate", req));
+            this.dueDate = this.GetDate("dueDate", req);
             this.isComplete = this.GetString("isComplete", req) == "T";
 
             this.parentTaskId = this.GetAny("parentTaskId", req);
@@ -95,10 +104,22 @@ export class TaskInputData
 
 
     // Separate method so that we can sanitize if we need to (not implemented)
-    GetString(key: string, req: Request): string
+    GetString(key: string, req: Request): string | undefined
     {
         return req.body[key];
     }
+
+
+
+    GetDate(key: string, req: Request): Date | undefined
+    {
+        const stringValue = this.GetString(key, req);
+        if(stringValue)
+            return new Date(stringValue);
+        else
+            return undefined;
+    }
+
 
 
     // Separate method so that we can sanitize if we need to (not implemented)

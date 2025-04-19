@@ -3,14 +3,92 @@
 
 
 document.addEventListener("DOMContentLoaded", () => 
-{
-    InitializePlantFormNew(); // form validation
-    InitializePlantFormEdit(); // form validation and correctly creating a put request
-    InitializeDeleteConfirm();
+{  
+    InitializeAllSaveButtons();
 });
 
 
 
+function InitializeAllSaveButtons()
+{
+    const allButtons = document.getElementsByClassName("saveTaskButton");
+
+    for(button of allButtons)
+    {
+        const taskData = button.closest(".taskData");
+        if(taskData == null)
+            continue;
+
+        let id = taskData.dataset.taskId;
+        button.onclick = () => SaveTask(id);
+    }
+}
+
+
+
+async function SaveTask(id)
+{
+    console.log("Saving task data: " + id);
+
+    const taskData = document.getElementById("taskData"+id);
+    const response = await fetch(window.location.origin + "/task/"+id,
+    {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(GetAllTaskJSONData(taskData)) 
+    });
+}
+
+
+
+function GetAllTaskJSONData(taskData)
+{
+    if(taskData == null)
+        return {};
+   
+    
+    const data = 
+    {
+        dueDate: GetElementTextContent(taskData, "dueDate"),
+        assignee: GetElementTextContent(taskData, "assignee"),
+        description: GetElementValue(taskData, "description")     
+    };
+
+    console.log("PUTTING with data: " + JSON.stringify(data));
+    return data;    
+}
+
+
+
+function GetElementTextContent(taskData, className)
+{
+    if(taskData == null)
+        return null;
+
+    const foundElement = taskData.querySelector("." + className);
+    if(foundElement == null)
+        return null;
+
+    return foundElement.textContent;
+}
+
+
+
+function GetElementValue(taskData, className)
+{
+    if(taskData == null)
+        return null;
+
+    const foundElement = taskData.querySelector("." + className);
+    if(foundElement == null)
+        return null;
+
+    return foundElement.value;
+}
+
+
+
+/*
 function InitializePlantFormNew()
 {
     const form = document.getElementById("plantForm");
@@ -149,4 +227,4 @@ async function OnDeleteClicked()
             window.location.href = "/plants/deleteSuccess";
         else        
             window.location.href = "/plants/deleteFail";
-}
+}*/

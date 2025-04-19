@@ -1,0 +1,17 @@
+<div class="card mb-3 taskData" id = "taskData{{id}}" data-task-id={{id}}>
+    <div class="card-body">
+        <div class="d-flex justify-content-between">            
+            <h5 class="card-title">{{name}}</h5>
+            <div class="text-end">
+                <p class="mb-1"><strong>Due Date:</strong> <a href="#" class="text-decoration-none dueDate">{{dueDate}}</a></p>
+                <p class="mb-0"><strong>Assignee:</strong> <a href="#" class="text-decoration-none assignee">Alice Johnson</a></p>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="description1" class="form-label">Description</label>
+            <textarea class="form-control description" rows="3">{{description}}</textarea>
+        </div>
+        <button class="btn btn-success">Mark Complete</button>
+        <button class="btn btn-primary saveTaskButton">Save</button>
+    </div>
+</div>

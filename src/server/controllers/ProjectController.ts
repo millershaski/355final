@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { Task } from "../models/Task";
 //import { Project} from "../models/Project";
 
 const router = express.Router();
@@ -8,12 +9,10 @@ router.get("/:id", async (req: Request, resp: Response) =>
 {
     try 
     {
-        console.log("Displaying project: " + req.params.id);
-        /*const allPlants = await Plant.findAll();      
-        allPlants.forEach((somePlant) => somePlant.FixDates());  
-        const allPlainData = allPlants.map(obj => obj.GetAllHandlebarData()) // needed so that handlebars can correctly access the properties (otherwise we get "Access has been denied to resolve the property "species" because it is not an "own property" of its parent.")
+        const allTasks = await Task.findAll();
+        const allPlainTasks = allTasks.map(task => task.GetAllHandlebarData());   
         
-        resp.render("allPlants", {plant: allPlainData});  */    
+        resp.render("project", {allTasks: allPlainTasks});
     } 
     catch (error) 
     {
