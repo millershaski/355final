@@ -5,6 +5,7 @@
 document.addEventListener("DOMContentLoaded", () => 
 {  
     InitializeAllSaveButtons();
+    InitializeAllDeleteButtons();
 });
 
 
@@ -12,16 +13,26 @@ document.addEventListener("DOMContentLoaded", () =>
 function InitializeAllSaveButtons()
 {
     const allButtons = document.getElementsByClassName("saveTaskButton");
-
     for(button of allButtons)
     {
-        const taskData = button.closest(".taskData");
-        if(taskData == null)
-            continue;
-
-        let id = taskData.dataset.taskId;
-        button.onclick = () => SaveTask(id);
+        const id = GetTaskIdOfArbitraryElement(button);
+        if(id > 0)
+            button.onclick = () => SaveTask(id);
     }
+}
+
+
+
+function GetTaskIdOfArbitraryElement(someElement)
+{
+    if(someElement == null)
+        return 0;
+
+    const taskData = someElement.closest(".taskData");
+    if(taskData == null)
+        return 0;
+
+    return taskData.dataset.taskId;
 }
 
 
@@ -29,8 +40,7 @@ function InitializeAllSaveButtons()
 async function SaveTask(id)
 {
     const taskData = document.getElementById("taskData"+id);
-    const targetUrl = window.location.origin + "/task/"+id;
-    
+    const targetUrl = GetTargetUrlFromTaskId(id);
     
     console.log("Saving task data: " + id + " to " + targetUrl);
     const response = await fetch(targetUrl,
@@ -41,6 +51,13 @@ async function SaveTask(id)
     });
 
     console.log(response);
+}
+
+
+
+function GetTargetUrlFromTaskId(id)
+{
+    return window.location.origin + "/task/"+id;    
 }
 
 
@@ -88,6 +105,51 @@ function GetElementValue(taskData, className)
         return null;
 
     return foundElement.value;
+}
+
+
+
+function InitializeAllDeleteButtons()
+{
+    const allButtons = document.getElementsByClassName("deleteTaskButton");
+    for(button of allButtons)
+    {
+        let id = GetTaskIdOfArbitraryElement(button);
+        if(id > 0)
+            button.onclick = () => OnDeleteTaskClicked(id); // just going to pass the id of the selected task 
+    }
+
+    const confirmDelete = document.getElementById("confirmDeleteButton");
+    if(confirmDelete != null)
+        confirmDelete.onclick = OnDeleteConfirmed;
+
+
+    console.log(allButtons.length + " : " + confirmDelete);
+}
+
+
+
+let selectedTaskId = 0;
+function OnDeleteTaskClicked(id)
+{
+    console.log("OnClicked: " + id);
+    selectedTaskId = id;
+}
+
+
+
+// Handles delete requests when the user confirms a delete
+async function OnDeleteConfirmed()
+{    
+    let deletePath = GetTargetUrlFromTaskId(selectedTaskId);
+    
+    await fetch(deletePath,
+    {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    location.reload(); // force a refresh (regardless of response)
 }
 
 
