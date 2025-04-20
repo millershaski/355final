@@ -40,13 +40,13 @@ app.use(
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
-        styleSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"], // this will allow js from bootstrap
+        styleSrc: ["'self'", "https://cdn.jsdelivr.net"], // this will allow css from bootstrap
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],
       },
     })
-  ); // this will allow js from bootstrap
+  ); 
 
   
 app.use(express.json());

@@ -1,0 +1,37 @@
+
+
+<!-- Edit/Expanded Task View (note that it defaults to hidden) -->
+<div class="expanded-view hidden" id="expandedTaskView">
+    <button class="close-expanded-view" id = "closeExpandedView" aria-label="Close">&times;</button>
+    <h4>Edit Task</h4>
+    <div class="mb-3">
+        <label class="form-label">Task Name</label>
+        <input type="text" class="form-control" id = "expandedTaskName" placeholder="Task Name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" id = "expandedDescription" rows="4" placeholder="Task Description"></textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Due Date</label>
+        <input type="date" id = "expandedDueDate" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Assignee</label>
+        <input type="text" id = "expandedAssignee" class="form-control" placeholder="Assignee Name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Subtasks</label>
+        <div class="mb-2 d-flex gap-2">
+        <input type="text" class="form-control" placeholder="Subtask description">
+        <button class="btn btn-outline-secondary">Add</button>
+        </div>
+        <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            Example subtask
+            <button class="btn btn-sm btn-danger">Remove</button>
+        </li>
+        </ul>
+    </div>
+    <button class="btn btn-primary">Save Changes</button>
+</div>

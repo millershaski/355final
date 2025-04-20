@@ -4,6 +4,7 @@
 
 document.addEventListener("DOMContentLoaded", () => 
 {  
+    InitializeAllExpandedTaskButtons();
     InitializeAllSaveButtons();
     InitializeAllDeleteButtons();
     InitializeAddTaskButton();
@@ -11,15 +12,19 @@ document.addEventListener("DOMContentLoaded", () =>
 
 
 
-function InitializeAllSaveButtons()
+function InitializeAllExpandedTaskButtons()
 {
-    const allButtons = document.getElementsByClassName("saveTaskButton");
+    const allButtons = document.getElementsByClassName("taskName");
     for(button of allButtons)
     {
         const id = GetTaskIdOfArbitraryElement(button);
         if(id > 0)
-            button.onclick = () => SaveTask(id);
+            button.onclick = () => ActivateExpandedTask(id);
     }
+
+    const closeButton = document.getElementById("closeExpandedView");
+    if(closeButton != null)
+        closeButton.onclick = () => document.getElementById("expandedTaskView")?.classList.add("hidden");
 }
 
 
@@ -38,9 +43,56 @@ function GetTaskIdOfArbitraryElement(someElement)
 
 
 
+async function ActivateExpandedTask(id)
+{
+    const taskData = document.getElementById("expandedTaskView");
+    if(taskData == null)
+        return;
+
+    taskData.classList.remove("hidden");
+    const data = GetAllTaskJSONData(id);
+
+    TryPopulateValue("expandedTaskName", data.name);
+    TryPopulateValue("expandedDueDate", data.dueDate);
+    TryPopulateTextContent("expandedAssignee", data.assignee);
+    TryPopulateValue("expandedDescription", data.description);
+}
+
+
+
+function TryPopulateTextContent(elementName, value)
+{
+    const element = document.getElementById(elementName);
+    if(element != null)
+        element.textContent = value;
+}
+
+
+
+function TryPopulateValue(elementName, value)
+{
+    const element = document.getElementById(elementName);
+    if(element != null)
+        element.value = value;
+}
+
+
+
+function InitializeAllSaveButtons()
+{
+    const allButtons = document.getElementsByClassName("saveTaskButton");
+    for(button of allButtons)
+    {
+        const id = GetTaskIdOfArbitraryElement(button);
+        if(id > 0)
+            button.onclick = () => SaveTask(id);
+    }
+}
+
+
+
 async function SaveTask(id)
 {
-    const taskData = document.getElementById("taskData"+id);
     const targetUrl = GetTargetUrlFromTaskId(id);
     
     console.log("Saving task data: " + id + " to " + targetUrl);
@@ -48,7 +100,7 @@ async function SaveTask(id)
     {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(GetAllTaskJSONData(taskData)) 
+        body: JSON.stringify(GetAllTaskJSONData(id)) 
     });
 
     console.log(response);
@@ -63,20 +115,21 @@ function GetTargetUrlFromTaskId(id)
 
 
 
-function GetAllTaskJSONData(taskData)
+function GetAllTaskJSONData(id)
 {
+    const taskData = document.getElementById("taskData"+id);
+
     if(taskData == null)
-        return {};
-   
+        return {};   
     
     const data = 
     {
+        name: GetElementTextContent(taskData, "taskName"),
         dueDate: GetElementValue(taskData, "dueDate"),
         assignee: GetElementTextContent(taskData, "assignee"),
         description: GetElementValue(taskData, "description")     
     };
 
-    console.log("PUTTING with data: " + JSON.stringify(data));
     return data;    
 }
 
