@@ -12,7 +12,7 @@ export class Task extends Model
     declare description: string;
     declare dueDate: Date;
     declare isComplete: boolean;
-
+    
     declare parentTaskId: number; // <= 0 is null
     declare allSubtasks: number[]; // order stored and can be changed by user
 
@@ -52,6 +52,8 @@ export class Task extends Model
     // Updates this instance with data from newData, then invokes save
     async UpdateWith(newData: TaskInputData)
     {
+        console.log("Updating task with: " + JSON.stringify(newData));
+
         if(newData == null)
             return;
         
@@ -103,6 +105,7 @@ export class TaskInputData
     description: string|undefined = "";
     dueDate: Date|undefined = new Date();
     isComplete: boolean|undefined = false;
+    assignee: string|undefined = "";
 
     parentTaskId: number = 0;
     allSubtasks: number[] = [];
@@ -119,6 +122,7 @@ export class TaskInputData
             this.description = this.GetString("description", req);
             this.dueDate = this.GetDate("dueDate", req);
             this.isComplete = this.GetString("isComplete", req) == "T";
+            this.assignee = this.GetString("assignee", req);
 
             this.parentTaskId = this.GetAny("parentTaskId", req);
             this.allSubtasks = this.GetAny("allSubtasks", req);

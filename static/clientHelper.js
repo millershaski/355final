@@ -2,8 +2,10 @@
 // due to the security settings, only javascript that we include from the server will work (as opposed to javascript that we write in handlebars or directly in the html).
 
 
+let selectedActiveTaskId_ = 0;
+
 document.addEventListener("DOMContentLoaded", () => 
-{  
+{      
     InitializeAllExpandedTaskButtons();
     InitializeAllSaveButtons();
     InitializeAllDeleteButtons();
@@ -49,6 +51,7 @@ async function ActivateExpandedTask(id)
     if(taskData == null)
         return;
 
+    selectedActiveTaskId_ = id;
     taskData.classList.remove("hidden");
     const data = GetAllTaskJSONData(id);
 
@@ -87,6 +90,10 @@ function InitializeAllSaveButtons()
         if(id > 0)
             button.onclick = () => SaveTask(id);
     }
+
+    const foundButton = document.getElementById("expandedSaveButton");
+    if(foundButton != null)
+        foundButton.onclick = SaveExpandedTask;
 }
 
 
@@ -122,15 +129,42 @@ function GetAllTaskJSONData(id)
     if(taskData == null)
         return {};   
     
+    return GetAllTaskJSONDataFromParentElement(taskData);  
+}
+
+
+
+function GetAllTaskJSONDataFromParentElement(parentElement)
+{
+    if(parentElement == null)
+        return {};   
+    
     const data = 
     {
-        name: GetElementTextContent(taskData, "taskName"),
-        dueDate: GetElementValue(taskData, "dueDate"),
-        assignee: GetElementTextContent(taskData, "assignee"),
-        description: GetElementValue(taskData, "description")     
+        name: GetElementTextContentOrValue(parentElement, "taskName"),
+        dueDate: GetElementValue(parentElement, "dueDate"),
+        assignee: GetElementTextContent(parentElement, "assignee"),
+        description: GetElementValue(parentElement, "description")     
     };
 
     return data;    
+}
+
+
+
+function GetElementTextContentOrValue(taskData, className)
+{
+    if(taskData == null)
+        return null;
+
+    const foundElement = taskData.querySelector("." + className);
+    if(foundElement == null)
+        return null;
+
+    if(foundElement.textContent == undefined || foundElement.textContent.length == 0)
+        return foundElement.value;
+    else
+        return foundElement.textContent;
 }
 
 
@@ -163,6 +197,27 @@ function GetElementValue(taskData, className)
 
 
 
+async function SaveExpandedTask()
+{
+    const expandedTaskView = document.getElementById("expandedTaskView");
+    if(expandedTaskView == null)
+        return;
+
+    const targetUrl = GetTargetUrlFromTaskId(selectedActiveTaskId_);
+    
+    console.log("Saving task data: " + selectedActiveTaskId_ + " to " + targetUrl);
+    const response = await fetch(targetUrl,
+    {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(GetAllTaskJSONDataFromParentElement(expandedTaskView)) 
+    });
+
+    console.log(response);
+}
+
+
+
 function InitializeAllDeleteButtons()
 {
     const allButtons = document.getElementsByClassName("deleteTaskButton");
@@ -180,10 +235,9 @@ function InitializeAllDeleteButtons()
 
 
 
-let selectedTaskId = 0;
 function OnDeleteTaskClicked(id)
 {
-    selectedTaskId = id;
+    selectedActiveTaskId_ = id;
 }
 
 
@@ -191,7 +245,7 @@ function OnDeleteTaskClicked(id)
 // Handles delete requests when the user confirms a delete
 async function OnDeleteConfirmed()
 {    
-    let deletePath = GetTargetUrlFromTaskId(selectedTaskId);
+    let deletePath = GetTargetUrlFromTaskId(selectedActiveTaskId_);
     
     await fetch(deletePath,
     {

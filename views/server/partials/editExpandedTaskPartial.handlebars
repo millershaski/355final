@@ -6,19 +6,19 @@
     <h4>Edit Task</h4>
     <div class="mb-3">
         <label class="form-label">Task Name</label>
-        <input type="text" class="form-control" id = "expandedTaskName" placeholder="Task Name">
+        <input type="text" class="form-control taskName" id = "expandedTaskName" placeholder="Task Name">
     </div>
     <div class="mb-3">
         <label class="form-label">Description</label>
-        <textarea class="form-control" id = "expandedDescription" rows="4" placeholder="Task Description"></textarea>
+        <textarea class="form-control description" id = "expandedDescription" rows="4" placeholder="Task Description"></textarea>
     </div>
     <div class="mb-3">
         <label class="form-label">Due Date</label>
-        <input type="date" id = "expandedDueDate" class="form-control">
+        <input type="date" id = "expandedDueDate" class="form-control dueDate">
     </div>
     <div class="mb-3">
         <label class="form-label">Assignee</label>
-        <input type="text" id = "expandedAssignee" class="form-control" placeholder="Assignee Name">
+        <input type="text" id = "expandedAssignee" class="form-control assignee" placeholder="Assignee Name">
     </div>
     <div class="mb-3">
         <label class="form-label">Subtasks</label>
@@ -33,5 +33,5 @@
         </li>
         </ul>
     </div>
-    <button class="btn btn-primary">Save Changes</button>
+    <button class="btn btn-primary" id = "expandedSaveButton">Save Changes</button>
 </div>
