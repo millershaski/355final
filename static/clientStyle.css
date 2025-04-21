@@ -42,3 +42,30 @@ html, body
     color: #6c757d;
     cursor: pointer;
 }
+
+.user-grid 
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 10px;
+    margin-top: 2rem;
+}
+
+.user-circle 
+{
+    width: 40px;
+    height: 40px;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+  
+.user-circle.add 
+{
+    background-color: #198754;
+}

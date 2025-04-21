@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 import { Task } from "../models/Task";
+import {User} from "../models/User";
+
 //import { Project} from "../models/Project";
 
 const router = express.Router();
@@ -11,9 +13,12 @@ router.get("/:id", async (req: Request, resp: Response) =>
     {
         const allTasks = await Task.findAll();
         allTasks.forEach((someTask) => someTask.FixDates());  
-        const allPlainTasks = allTasks.map(task => task.GetAllHandlebarData());   
+        const allPlainTasks = allTasks.map(task => task.GetAllHandlebarData());  
         
-        resp.render("project", {allTasks: allPlainTasks});
+        const allUsers = await User.findAll();
+        const allPlainUsers = allUsers.map(user => user.GetAllHandlebarData());
+        
+        resp.render("project", {allTasks: allPlainTasks, allUsers: allPlainUsers});
     } 
     catch (error) 
     {

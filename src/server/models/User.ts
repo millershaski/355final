@@ -20,11 +20,29 @@ export class User extends Model
         {            
             id: this.id,
             name: this.name,
-            email: this.email
+            email: this.email,
+            initials: this.GetInitials()
         }
         return data;
     }
     
+
+    GetInitials(): string
+    {
+        const allNames = this.name.split(" ");
+        if(allNames.length == 1)
+        {
+            if(allNames[0].length >= 2)
+                return allNames[0][0] + allNames[0][1];
+            else if(allNames[0].length == 1)
+                return allNames[0][0];
+        }
+        else if(allNames.length > 1)
+            return allNames[0][0] + allNames[1][0];
+        
+        return "UK" // unknown (fallback)
+    }
+
 
 
     // Updates this instance with data from newData, then invokes save

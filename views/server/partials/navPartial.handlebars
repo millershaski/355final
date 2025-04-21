@@ -13,4 +13,11 @@
             <a class="nav-link text-white" href="#">Yet Another Project</a>
             </li>
         </ul>
+
+        <div class="user-grid">
+            {{#each allUsers}}             
+                <div class="user-circle">{{this.initials}}</div>
+            {{/each}}
+            <div class="user-circle" data-bs-toggle="modal" data-bs-target="#addUserModal">+</div>
+        </div>
     </nav>

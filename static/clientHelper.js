@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () =>
     InitializeAllSaveButtons();
     InitializeAllDeleteButtons();
     InitializeAddTaskButton();
+    InitializeAddUserButton();
 });
 
 
@@ -141,10 +142,10 @@ function GetAllTaskJSONDataFromParentElement(parentElement)
     
     const data = 
     {
-        name: GetElementTextContentOrValue(parentElement, "taskName"),
-        dueDate: GetElementValue(parentElement, "dueDate"),
-        assignee: GetElementTextContent(parentElement, "assignee"),
-        description: GetElementValue(parentElement, "description")     
+        name: GetElementTextContentOrValue("taskName", parentElement),
+        dueDate: GetElementValue("dueDate", parentElement),
+        assignee: GetElementTextContent("assignee", parentElement),
+        description: GetElementValue("description", parentElement)     
     };
 
     return data;    
@@ -152,14 +153,11 @@ function GetAllTaskJSONDataFromParentElement(parentElement)
 
 
 
-function GetElementTextContentOrValue(taskData, className)
+function GetElementTextContentOrValue(elementName, taskData)
 {
-    if(taskData == null)
-        return null;
-
-    const foundElement = taskData.querySelector("." + className);
+    const foundElement = FindElement(taskData, elementName); 
     if(foundElement == null)
-        return null;
+        return;
 
     if(foundElement.textContent == undefined || foundElement.textContent.length == 0)
         return foundElement.value;
@@ -169,28 +167,32 @@ function GetElementTextContentOrValue(taskData, className)
 
 
 
-function GetElementTextContent(taskData, className)
+function FindElement(parentElement, elementName)
 {
-    if(taskData == null)
-        return null;
+    if(parentElement == null)
+        return document.getElementById(elementName);
+    else
+        return parentElement.querySelector("." + elementName);  
+}
 
-    const foundElement = taskData.querySelector("." + className);
+
+
+function GetElementTextContent(elementName, taskData)
+{
+    const foundElement = FindElement(taskData, elementName); 
     if(foundElement == null)
-        return null;
+        return;
 
     return foundElement.textContent;
 }
 
 
 
-function GetElementValue(taskData, className)
+function GetElementValue(elementName, taskData)
 {
-    if(taskData == null)
-        return null;
-
-    const foundElement = taskData.querySelector("." + className);
+    const foundElement = FindElement(taskData, elementName); 
     if(foundElement == null)
-        return null;
+        return;
 
     return foundElement.value;
 }
@@ -276,6 +278,52 @@ async function CreateTask()
     });
     
     location.reload(); // force a refresh (regardless of response)
+}
+
+
+
+function InitializeAddUserButton()
+{
+    const button = document.getElementById("addUserButton");
+    if(button == null)
+        return;
+
+    button.onclick = OnAddUserClicked;    
+}
+
+
+
+async function OnAddUserClicked()
+{
+    const expandedTaskView = document.getElementById("expandedTaskView");
+    if(expandedTaskView == null)
+        return;
+
+    const targetUrl = window.location.origin + "/user/"
+    
+    console.log("Saving new user to: " + targetUrl);
+    const response = await fetch(targetUrl,
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(GetAllNewUserJSONData()) 
+    });
+
+    console.log(response);
+    location.reload(); // force a refresh (regardless of response)
+}
+
+
+
+function GetAllNewUserJSONData()
+{    
+    const data = 
+    {
+        name: GetElementTextContentOrValue("newUserName"),
+        email: GetElementTextContentOrValue("newUserEmail")   
+    };
+
+    return data;    
 }
 
 
