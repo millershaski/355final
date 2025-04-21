@@ -12,27 +12,41 @@ export class Task extends Model
     declare description: string;
     declare dueDate: Date;
     declare isComplete: boolean;
-    
+
+    declare assigneeId: number;
     declare parentTaskId: number; // <= 0 is null
     declare allSubtasks: number[]; // order stored and can be changed by user
+
+    user_: User | null = null;
+    
 
 
     // We use this method so that handlebars can correctly access the data (it can't access inherited members by default).
     // We can also perform some formatting things here.
     // This method returns plain data that handlebars can access
-    GetAllHandlebarData()
+    async GetAllHandlebarData()
     {
-        const data = 
+        let data = 
         {            
             id: this.id,
             name: this.name,
             description: this.description,
             dueDate: this.ToInputSafeDate(this.dueDate),
             isComplete: this.isComplete,
+            assigneeInitials: "+",
 
             parentTaskId: this.parentTaskId,
             allSubtasks: this.allSubtasks
         }
+
+        let user = null;
+        if(this.assigneeId > 0)
+        {
+            user = await User.findByPk(this.assigneeId);
+            if(user != null)
+                data.assigneeInitials = user.GetInitials();
+        }
+
         return data;
     }
     
@@ -204,6 +218,16 @@ Task.init(
         type: DataTypes.BOOLEAN,
         allowNull: true
     },
+    assigneeId:
+    {
+        type: DataTypes.NUMBER,
+        allowNull: true,
+        references:
+        {
+            model: "Users",
+            key: "id"
+        }
+    },
     parentTaskId:
     {
         type: DataTypes.NUMBER,
@@ -239,7 +263,7 @@ Task.hasOne(Task, {foreignKey: "parentTaskId"}); // a task can have only a singl
 Task.hasMany(Task); // tasks can have many subtasks
 
 
-Task.belongsTo(User); // a task can be assigned to a user
+// Task.belongsTo(User); // a task can be assigned to a user
 User.hasMany(Task); // a user can have many tasks
 
 

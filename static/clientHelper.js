@@ -60,6 +60,7 @@ async function ActivateExpandedTask(id)
     TryPopulateValue("expandedDueDate", data.dueDate);
     TryPopulateTextContent("expandedAssignee", data.assignee);
     TryPopulateValue("expandedDescription", data.description);
+    TryPopulateTextContent("expandedAssignee", data.assigneeInitials);
 }
 
 
@@ -144,7 +145,7 @@ function GetAllTaskJSONDataFromParentElement(parentElement)
     {
         name: GetElementTextContentOrValue("taskName", parentElement),
         dueDate: GetElementValue("dueDate", parentElement),
-        assignee: GetElementTextContent("assignee", parentElement),
+        assigneeInitials: GetElementTextContent("assigneeInitials", parentElement),
         description: GetElementValue("description", parentElement)     
     };
 

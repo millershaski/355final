@@ -27,7 +27,7 @@ export class User extends Model
     }
     
 
-    GetInitials(): string
+    public GetInitials(): string
     {
         const allNames = this.name.split(" ");
         if(allNames.length == 1)

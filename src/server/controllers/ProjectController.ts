@@ -13,14 +13,20 @@ router.get("/:id", async (req: Request, resp: Response) =>
     {
         const allTasks = await Task.findAll();
         allTasks.forEach((someTask) => someTask.FixDates());  
-        const allPlainTasks = allTasks.map(task => task.GetAllHandlebarData());  
+        const allPlainTasks:any[] = [];
+        for(const someTask of allTasks) // Task.GetAllHandlebarData is async, so we must manually await it
+        {
+            const plainTask = await someTask.GetAllHandlebarData();
+            allPlainTasks.push(plainTask);
+        }
+        allTasks.map(task => task.GetAllHandlebarData());  
         
         const allUsers = await User.findAll();
         const allPlainUsers = allUsers.map(user => user.GetAllHandlebarData());
         
         resp.render("project", {allTasks: allPlainTasks, allUsers: allPlainUsers});
     } 
-    catch (error) 
+    catch(error) 
     {
         console.error("Error fetching plants:", error); 
         resp.status(500).send("Internal Server Error"); 
