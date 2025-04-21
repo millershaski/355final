@@ -11,15 +11,14 @@ router.get("/:id", async (req: Request, resp: Response) =>
 {
     try 
     {
-        const allTasks = await Task.findAll();
-        allTasks.forEach((someTask) => someTask.FixDates());  
+        const allTasks = await Task.findAll();        
         const allPlainTasks:any[] = [];
-        for(const someTask of allTasks) // Task.GetAllHandlebarData is async, so we must manually await it
+        for(const someTask of allTasks) // Task.GetAllHandlebarData is async, so we must manually await it (sure is ugly)
         {
+            someTask.FixDates();
             const plainTask = await someTask.GetAllHandlebarData();
             allPlainTasks.push(plainTask);
         }
-        allTasks.map(task => task.GetAllHandlebarData());  
         
         const allUsers = await User.findAll();
         const allPlainUsers = allUsers.map(user => user.GetAllHandlebarData());
