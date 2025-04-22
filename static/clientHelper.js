@@ -3,6 +3,8 @@
 
 
 let selectedActiveTaskId_ = 0;
+let selectedActiveTaskData_;
+
 let taskIdForAssigneeChange_ = 0; // the id of the task that will have its assignee changed if the user confirms in the menu
 
 
@@ -14,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () =>
     InitializeAddTaskButton();
     InitializeAddUserButton();
     InitializeAllSelectAssigneeButtons();
+    InitializeAllMarkCompleteButtons();
 });
 
 
@@ -56,6 +59,8 @@ async function ActivateExpandedTask(id)
         return;
 
     selectedActiveTaskId_ = id;
+    selectedActiveTaskData_ = {isComplete: GetIsCompleteFor(id)};
+
     taskData.classList.remove("hidden");
     const data = GetAllTaskJSONData(id);
 
@@ -64,6 +69,19 @@ async function ActivateExpandedTask(id)
     TryPopulateTextContent("expandedAssignee", data.assignee);
     TryPopulateValue("expandedDescription", data.description);
     TryPopulateTextContent("expandedAssignee", data.assigneeInitials);
+
+    TryPopulateTextContent("expandedMarkComplete", selectedActiveTaskData_.isComplete ? "Mark Uncomplete" : "Mark Complete");
+}
+
+
+
+function GetIsCompleteFor(id)
+{
+    const button = document.getElementById("markComplete" + id);
+    if(button != null)
+        return button.dataset.isComplete == "true";
+
+    return false;
 }
 
 
@@ -409,6 +427,30 @@ async function UpdateTask(taskId, payload, forceRefresh)
 
     if(forceRefresh == true)
         ForceRefresh();
+}
+
+
+
+function InitializeAllMarkCompleteButtons()
+{
+    const allMarkCompleteButtons = document.getElementsByClassName("markComplete");
+    for(const someButton of allMarkCompleteButtons)
+    {
+        const id = GetTaskIdOfArbitraryElement(someButton);
+        if(id > 0)
+            someButton.onclick = () => OnMarkCompleteClicked(id, !(someButton.dataset.isComplete == "true"));
+    }
+
+    const markCompleteButton = document.getElementById("expandedMarkComplete");
+    if(markCompleteButton != null)
+        markCompleteButton.onclick = () => {OnMarkCompleteClicked(selectedActiveTaskId_, !selectedActiveTaskData_.isComplete);}
+}
+
+
+
+function OnMarkCompleteClicked(id, newValue)
+{
+    UpdateTask(id, {isComplete:newValue}, true);
 }
 
 

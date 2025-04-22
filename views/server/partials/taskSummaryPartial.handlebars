@@ -1,23 +1,48 @@
-<div class="card mb-3 taskData" id = "taskData{{id}}" data-task-id={{id}}>
-    <div class="card-body">
-        <div class="d-flex justify-content-between">            
-            <h5 class="card-title taskName"><a href = "#"> {{name}} </a></h5>
-            <div class="text-end">
-                <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
-                    <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
-                    <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
-                </div>
+{{#if isComplete}} 
+    <div class="card mb-3 border-success taskData" id = "taskData{{id}}" data-task-id={{id}}>
+        <div class="card-body">
+            <div class="d-flex justify-content-between">            
+                <h5 class="card-title text-success taskName"><a href = "#">{{name}}</a>&nbsp;&nbsp;&nbsp;<span class="badge bg-success">Completed</span></h5>
+                <div class="text-end">
+                    <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
+                        <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
+                        <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
+                    </div>
 
-                <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>
-                
+                    <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>                    
+                </div>
             </div>
+            <div class="mb-3">
+                <label for="description1" class="form-label">Description</label>
+                <textarea class="form-control description" rows="3">{{description}}</textarea>
+            </div>
+            <button id = "markComplete{{id}}" class="btn btn-success markComplete" data-is-complete="true">Mark Uncomplete</button>
+            <button class="btn btn-primary saveTaskButton">Save</button>
+            <button class="btn btn-danger deleteTaskButton" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
         </div>
-        <div class="mb-3">
-            <label for="description1" class="form-label">Description</label>
-            <textarea class="form-control description" rows="3">{{description}}</textarea>
-        </div>
-        <button class="btn btn-success">Mark Complete</button>
-        <button class="btn btn-primary saveTaskButton">Save</button>
-        <button class="btn btn-danger deleteTaskButton" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
     </div>
-</div>
+ {{else}}
+    <div class="card mb-3 taskData" id = "taskData{{id}}" data-task-id={{id}}>
+        <div class="card-body">
+            <div class="d-flex justify-content-between">            
+                <h5 class="card-title taskName"><a href = "#">{{name}}</a></h5>
+                <div class="text-end">
+                    <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
+                        <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
+                        <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
+                    </div>
+
+                    <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>
+                    
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="description1" class="form-label">Description</label>
+                <textarea class="form-control description" rows="3">{{description}}</textarea>
+            </div>
+            <button id = "markComplete{{id}}" class="btn btn-success markComplete" data-is-complete="false">Mark Complete</button>
+            <button class="btn btn-primary saveTaskButton">Save</button>
+            <button class="btn btn-danger deleteTaskButton" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+        </div>
+    </div>
+ {{/if}}  

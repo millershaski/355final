@@ -15,7 +15,7 @@ export const ResetDatabase = async () =>
                 
    
     await Task.create({id: 1, name: "Task1", description: "Description1", dueDate: Date.now(), isComplete: false, assigneeId: 2});
-    await Task.create({id: 2, name: "Task2", description: "Description2", dueDate: Date.now(), isComplete: false});
+    await Task.create({id: 2, name: "Task2", description: "Description2", dueDate: Date.now(), isComplete: true});
 
     console.log("...Done resetting database");
 };

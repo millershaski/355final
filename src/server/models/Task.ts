@@ -138,7 +138,7 @@ export class TaskInputData
             this.name = this.GetString("name", req);
             this.description = this.GetString("description", req);
             this.dueDate = this.GetDate("dueDate", req);
-            this.isComplete = this.GetString("isComplete", req) == "T";
+            this.isComplete = this.GetAny("isComplete", req);
             this.assigneeId = this.GetAny("assigneeId", req);
 
             this.parentTaskId = this.GetAny("parentTaskId", req);
@@ -156,6 +156,9 @@ export class TaskInputData
     // Separate method so that we can sanitize if we need to (not implemented)
     GetString(key: string, req: Request): string | undefined
     {
+        if(req.body.hasOwnProperty(key) == false)
+            return undefined;
+    
         return req.body[key];
     }
 
@@ -175,6 +178,9 @@ export class TaskInputData
     // Separate method so that we can sanitize if we need to (not implemented)
     GetAny(key: string, req: Request): any
     {
+        if(req.body.hasOwnProperty(key) == false)
+            return undefined;
+
         return req.body[key];
     }
 
