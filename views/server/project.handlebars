@@ -86,7 +86,7 @@
         <div class="modal-body">
           <div class="list-group">
             {{#each allUsers}}
-              <button class="list-group-item list-group-item-action" id = "selectUser{{this.id}}">{{this.name}}</button>
+              <button class="list-group-item list-group-item-action confirmUserOption" id = "selectUser{{this.id}}" data-user-id="{{this.id}}">{{this.name}}</button>
             {{/each}}
           </div>
         </div>

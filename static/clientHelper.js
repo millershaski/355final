@@ -3,6 +3,8 @@
 
 
 let selectedActiveTaskId_ = 0;
+let taskIdForAssigneeChange_ = 0; // the id of the task that will have its assignee changed if the user confirms in the menu
+
 
 document.addEventListener("DOMContentLoaded", () => 
 {      
@@ -11,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () =>
     InitializeAllDeleteButtons();
     InitializeAddTaskButton();
     InitializeAddUserButton();
+    InitializeAllSelectAssigneeButtons();
 });
 
 
@@ -256,7 +259,14 @@ async function OnDeleteConfirmed()
         headers: { 'Content-Type': 'application/json' }
     });
 
-    location.reload(); // force a refresh (regardless of response)
+    ForceRefresh(); // force a refresh (regardless of response)
+}
+
+
+
+function ForceRefresh()
+{
+    location.reload(); 
 }
 
 
@@ -278,7 +288,7 @@ async function CreateTask()
         headers: { 'Content-Type': 'application/json' }
     });
     
-    location.reload(); // force a refresh (regardless of response)
+    ForceRefresh();
 }
 
 
@@ -311,7 +321,7 @@ async function OnAddUserClicked()
     });
 
     console.log(response);
-    location.reload(); // force a refresh (regardless of response)
+    ForceRefresh();
 }
 
 
@@ -325,6 +335,80 @@ function GetAllNewUserJSONData()
     };
 
     return data;    
+}
+
+
+
+function InitializeAllSelectAssigneeButtons()
+{
+    InitializeAllOpenAssigneeMenuButtons();
+    InitializeAllConfirmAssigneeButtons();
+}
+
+
+
+function InitializeAllOpenAssigneeMenuButtons()
+{
+    const expandedUserButton = document.getElementById("expandedAssignee");
+    if(expandedUserButton != null)
+        expandedUserButton.onclick = OnExpandedSelectAssigneeClicked;
+
+    const allAssigneeButtons = document.getElementsByClassName("assigneeInitials");
+    for(const button of allAssigneeButtons)
+    {
+        const id = GetTaskIdOfArbitraryElement(button);
+        if(id > 0)
+            button.onclick = () => OnSummarySelectAssigneeClicked(id);
+    }
+}
+
+
+
+function OnExpandedSelectAssigneeClicked()
+{
+    taskIdForAssigneeChange_ = selectedActiveTaskId_;
+}
+
+
+
+function OnSummarySelectAssigneeClicked(taskId)
+{
+    taskIdForAssigneeChange_ = taskId;
+}
+
+
+
+function InitializeAllConfirmAssigneeButtons()
+{
+    const allConfirmUserOptions = document.getElementsByClassName("confirmUserOption");
+    for(const confirmButton of allConfirmUserOptions)
+    {
+        confirmButton.onclick = () => {OnConfirmAssigneeClicked(confirmButton.dataset.userId);}
+    }
+}
+
+
+
+function OnConfirmAssigneeClicked(assigneeId)
+{
+    UpdateTask(taskIdForAssigneeChange_, {assigneeId:assigneeId}, true);
+}
+
+
+
+async function UpdateTask(taskId, payload, forceRefresh)
+{
+    const targetUrl = GetTargetUrlFromTaskId(taskId);
+    
+    const response = await fetch(targetUrl,
+    {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload) 
+    });
+
+    if(forceRefresh == true)
+        ForceRefresh();
 }
 
 

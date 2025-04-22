@@ -85,6 +85,9 @@ export class Task extends Model
 
         if(newData.parentTaskId != null)
             this.parentTaskId = newData.parentTaskId;
+
+        if(newData.assigneeId != null)
+            this.assigneeId = newData.assigneeId;
         
         // this.allSubtasks = newData.allSubtasks;
 
@@ -119,7 +122,7 @@ export class TaskInputData
     description: string|undefined = "";
     dueDate: Date|undefined = new Date();
     isComplete: boolean|undefined = false;
-    assignee: string|undefined = "";
+    assigneeId: number|undefined = 0;
 
     parentTaskId: number = 0;
     allSubtasks: number[] = [];
@@ -136,7 +139,7 @@ export class TaskInputData
             this.description = this.GetString("description", req);
             this.dueDate = this.GetDate("dueDate", req);
             this.isComplete = this.GetString("isComplete", req) == "T";
-            this.assignee = this.GetString("assignee", req);
+            this.assigneeId = this.GetAny("assigneeId", req);
 
             this.parentTaskId = this.GetAny("parentTaskId", req);
             this.allSubtasks = this.GetAny("allSubtasks", req);
