@@ -14,12 +14,13 @@ export class Task extends Model
     declare isComplete: boolean;
 
     declare assigneeId: number;
+    declare projectId: number;
+
     declare parentTaskId: number; // <= 0 is null
     declare allSubtasks: number[]; // order stored and can be changed by user
 
     user_: User | null = null;
     
-
 
     // We use this method so that handlebars can correctly access the data (it can't access inherited members by default).
     // We can also perform some formatting things here.
@@ -123,7 +124,7 @@ export class TaskInputData
     dueDate: Date|undefined = new Date();
     isComplete: boolean|undefined = false;
     assigneeId: number|undefined = 0;
-
+    
     parentTaskId: number = 0;
     allSubtasks: number[] = [];
 
@@ -243,8 +244,18 @@ Task.init(
         allowNull: true,
         references: 
         {
-            model: 'Tasks',
-            key: 'id'
+            model: "Tasks",
+            key: "id"
+        }
+    },
+    projectId:
+    {
+        type: DataTypes.NUMBER,
+        allowNull: false, // all tasks must belong to a project
+        references:
+        {
+            model: "Projects",
+            key: "id"
         }
     },
     allSubtasks:
@@ -272,7 +283,9 @@ Task.hasOne(Task, {foreignKey: "parentTaskId"}); // a task can have only a singl
 Task.hasMany(Task); // tasks can have many subtasks
 
 
-// Task.belongsTo(User); // a task can be assigned to a user
-User.hasMany(Task); // a user can have many tasks
+User.hasMany(Task, {foreignKey: "assigneeId"}); // a user can have many tasks
+Task.belongsTo(User);
 
 
+// getBar
+// setBar

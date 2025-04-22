@@ -7,9 +7,14 @@ let selectedActiveTaskData_;
 
 let taskIdForAssigneeChange_ = 0; // the id of the task that will have its assignee changed if the user confirms in the menu
 
+let projectId_ = 0;
+
 
 document.addEventListener("DOMContentLoaded", () => 
 {      
+    PopulateProjectId();
+    InitializeProjectRename();
+
     InitializeAllExpandedTaskButtons();
     InitializeAllSaveButtons();
     InitializeAllDeleteButtons();
@@ -18,6 +23,32 @@ document.addEventListener("DOMContentLoaded", () =>
     InitializeAllSelectAssigneeButtons();
     InitializeAllMarkCompleteButtons();
 });
+
+
+
+function PopulateProjectId()
+{
+    const projectData = document.getElementById("projectData");
+    if(projectData != null)
+        projectId_ = projectData.dataset.projectId;
+}
+
+
+function InitializeProjectRename()
+{
+    const renameButton = document.getElementById("saveProjectRename");
+    if(renameButton != null)
+        renameButton.onclick = OnProjectRenameConfirmed;
+}
+
+
+
+function OnProjectRenameConfirmed()
+{
+    const newName = GetElementTextContentOrValue("projectRenameValue");
+    if(newName != null && newName.length > 0)
+        UpdateProject(projectId_, {name:newName});
+}
 
 
 
@@ -303,7 +334,8 @@ async function CreateTask()
     await fetch(GetTargetUrlFromTaskId(""),
     {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({projectId: projectId_}) 
     });
     
     ForceRefresh();
@@ -324,9 +356,9 @@ function InitializeAddUserButton()
 
 async function OnAddUserClicked()
 {
-    const expandedTaskView = document.getElementById("expandedTaskView");
-    if(expandedTaskView == null)
-        return;
+    // TODO: ensure that email is in valid format
+    console.log("Client side validate here: ");
+    
 
     const targetUrl = window.location.origin + "/user/"
     
@@ -412,11 +444,28 @@ function OnConfirmAssigneeClicked(assigneeId)
     UpdateTask(taskIdForAssigneeChange_, {assigneeId:assigneeId}, true);
 }
 
-
+ 
 
 async function UpdateTask(taskId, payload, forceRefresh)
 {
     const targetUrl = GetTargetUrlFromTaskId(taskId);
+    
+    const response = await fetch(targetUrl,
+    {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload) 
+    });
+
+    if(forceRefresh == true)
+        ForceRefresh();
+}
+
+
+
+async function UpdateProject(projectId, payload, forceRefresh)
+{
+    const targetUrl = window.location.origin + "/project/"+id; 
     
     const response = await fetch(targetUrl,
     {

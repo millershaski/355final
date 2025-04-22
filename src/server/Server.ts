@@ -41,7 +41,7 @@ app.use(
       directives: {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "https://cdn.jsdelivr.net"], // this will allow js from bootstrap
-        styleSrc: ["'self'", "https://cdn.jsdelivr.net"], // this will allow css from bootstrap
+        styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"], // this will allow css from bootstrap and inline (inline css should be safe?)
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],
       },

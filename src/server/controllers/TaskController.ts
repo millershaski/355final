@@ -51,7 +51,7 @@ router.post("/", async (req: Request, resp: Response) =>
     {
         console.log("Creating new task");
 
-        await Task.create({name: "New task", dueDate: new Date()});  
+        await Task.create({name: "New task", dueDate: new Date(), projectId: req.body["projectId"]});  
         resp.status(204).send();
     } 
     catch (error) 
