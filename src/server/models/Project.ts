@@ -32,7 +32,8 @@ export class Project extends Model
         if(newData == null)
             return;
         
-        this.name = newData.name;
+        if(newData.name != null)
+            this.name = newData.name;
 
         await this.save();
     }
@@ -43,7 +44,7 @@ export class Project extends Model
 // Handles getting all input data correctly from a Request
 export class ProjectInputData
 {
-    name: string = "";
+    name: string | undefined = "";
 
     constructor(req: Request)
     {
@@ -64,8 +65,11 @@ export class ProjectInputData
 
 
     // Separate method so that we can sanitize if we need to (not implemented)
-    GetString(key: string, req: Request): string
+    GetString(key: string, req: Request): string | undefined
     {
+        if(req.body.hasOwnProperty(key) == false)
+            return undefined;
+
         return req.body[key];
     }
 

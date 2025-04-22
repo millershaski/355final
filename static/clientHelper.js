@@ -465,7 +465,7 @@ async function UpdateTask(taskId, payload, forceRefresh)
 
 async function UpdateProject(projectId, payload, forceRefresh)
 {
-    const targetUrl = window.location.origin + "/project/"+id; 
+    const targetUrl = window.location.origin + "/project/"+projectId; 
     
     const response = await fetch(targetUrl,
     {

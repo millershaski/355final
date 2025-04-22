@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { Task } from "../models/Task";
 import { User } from "../models/User";
-import { Project} from "../models/Project";
+import { Project, ProjectInputData} from "../models/Project";
 import { Get404PageString } from "../FileTemplates";
 
 
@@ -36,6 +36,27 @@ router.get("/:id", async (req: Request, resp: Response) =>
     catch(error) 
     {
         console.error("Error fetching plants:", error); 
+        resp.status(500).send("Internal Server Error"); 
+    }
+});
+
+
+
+// updates a specified project
+router.put("/:id", async (req: Request, resp: Response) =>
+{
+    try 
+    {
+        const project = await Project.findByPk(req.params.id);
+        if(project == null)
+            return resp.status(404).json({ error: 'Project not found' });        
+
+        project.UpdateWith(new ProjectInputData(req));        
+        resp.json(project);
+    } 
+    catch (error) 
+    {
+        console.error("Error fetching task:", error); 
         resp.status(500).send("Internal Server Error"); 
     }
 });
