@@ -11,8 +11,8 @@ import { Project } from "../models/Project";
 export const StartServer = async (port:any, app:Express) =>
 {
     // only 1 should be uncommented
-    await ResetDatabase();
-    // await EnsureProject();
+    //await ResetDatabase();
+    await EnsureProject();
 
     // once database is ready, we can start the server
     const server = createServer(app);
@@ -27,7 +27,6 @@ const ResetDatabase = async () =>
 
     await sequelize.drop(); // Clears tables before sync
     await sequelize.sync({force:true});
-
     
     await Project.create({id: 1, name: "Todo"})
     await Project.create({id: 2, name: "Project1"})
