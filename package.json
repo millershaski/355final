@@ -10,7 +10,7 @@
     "simple": "tsc && node --env-file-if-exists=secret.env dist/server/Server.js",
     "nodemon": "nodemon dist/server/Server.js",
     "build": "tsc --listEmittedFiles && webpack",
-    "start:prod": "node dist/server/Server.js"
+    "start:prod": "node --env-file-if-exists=secret.env dist/server/Server.js"
   },
   "keywords": [],
   "author": "",
