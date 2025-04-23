@@ -38,7 +38,6 @@ app.use((req: Request, resp: Response, next) =>
     next(); // without a next, this request will die here
 });
 
-// parses cookies
 app.use(cookieParser());
     
 app.use(helmet());
@@ -95,6 +94,5 @@ app.use((req:Request, resp: Response, next) =>
 
 import {StartServer } from "./config/ServerStarter"
 
-
-StartServer(port, app);
+StartServer(port, app); // calls sequelize.sync before starting the server (in dev, it resets the database first)
 

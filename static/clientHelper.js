@@ -63,7 +63,13 @@ function InitializeAllExpandedTaskButtons()
 
     const closeButton = document.getElementById("closeExpandedView");
     if(closeButton != null)
-        closeButton.onclick = () => document.getElementById("expandedTaskView")?.classList.add("hidden");
+    {
+        closeButton.onclick = () => 
+        {
+            document.getElementById("expandedTaskView")?.classList.add("hidden");
+            selectedActiveTaskId_ = -1;
+        };
+    }
 }
 
 
@@ -89,10 +95,30 @@ async function ActivateExpandedTask(id)
         return;
 
     selectedActiveTaskId_ = id;
-    selectedActiveTaskData_ = {isComplete: GetIsCompleteFor(id)};
     taskData.dataset.taskId = id;
 
     taskData.classList.remove("hidden");
+    PopulateExpandedTaskCardWith(id);
+}
+
+
+
+function GetIsCompleteFor(id)
+{
+    const allParentCards = document.getElementsByClassName("parentTaskData" + id);
+    for(const parentCard of allParentCards)
+    {
+        if(parentCard.classList.contains("hidden") == false)
+            return parentCard.dataset.isCompleteVersion == "true";
+    }
+}
+
+
+
+function PopulateExpandedTaskCardWith(id)
+{
+    selectedActiveTaskData_ = {isComplete: GetIsCompleteFor(id)}
+
     const data = GetAllTaskJSONData(id);
 
     TryPopulateValue("expandedTaskName", data.name);
@@ -102,17 +128,6 @@ async function ActivateExpandedTask(id)
     TryPopulateTextContent("expandedAssignee", data.assigneeInitials);
 
     TryPopulateTextContent("expandedMarkComplete", selectedActiveTaskData_.isComplete ? "Mark Uncomplete" : "Mark Complete");
-}
-
-
-
-function GetIsCompleteFor(id)
-{
-    const button = document.getElementById("markComplete" + id);
-    if(button != null)
-        return button.dataset.isComplete == "true";
-
-    return false;
 }
 
 
@@ -590,9 +605,48 @@ function InitializeAllMarkCompleteButtons()
 
 
 
-function OnMarkCompleteClicked(id, newValue)
+async function OnMarkCompleteClicked(id, newValue)
 {
-    UpdateTask(id, {isComplete:newValue}, true);
+    UpdateTask(id, {isComplete:newValue}, false);
+
+    const taskData = GetTaskDataFromId(id)
+    if(taskData != null)
+    {
+        if(taskData.dataset.isSubtask == "true") 
+            RefreshIsCompleteOfSubtask(id, newValue);
+        else 
+            RefreshIsCompleteOfParentCard(id, newValue);
+    }
+
+    if(selectedActiveTaskId_ > 0) // repopulate if active (this covers subtasks too). Note that we'll be refreshing at times when we don't need to
+        PopulateExpandedTaskCardWith(selectedActiveTaskId_);
+}
+
+
+
+function RefreshIsCompleteOfSubtask(id, newValue)
+{
+    // subtasks just need to have their checkboxes changed
+    const checkbox = FindElement("markComplete");
+    if(checkbox != null)
+        checkbox.checked = newValue; // "change" event shouldn't be triggered with this
+}
+
+
+
+function RefreshIsCompleteOfParentCard(id, newValue)
+{
+    // non subtasks need to toggle the correct card's "hidden" value
+
+    const allParentTaskData = document.getElementsByClassName("parentTaskData" + id);
+    for(const parentElement of allParentTaskData)
+    {
+        const isCompleteVersion = parentElement.dataset.isCompleteVersion == "true"
+        if(isCompleteVersion == newValue)
+            parentElement.classList.remove("hidden");
+        else    
+            parentElement.classList.add("hidden");     
+    }
 }
 
 
