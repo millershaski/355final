@@ -3,6 +3,7 @@ import { Task } from "../models/Task";
 import { User } from "../models/User";
 import { Project, ProjectInputData} from "../models/Project";
 import { Get404PageString } from "../FileTemplates";
+import { IsAuthenticated } from "../ServerAuth";
 
 
 const router = express.Router();
@@ -12,6 +13,9 @@ router.get("/:id", async (req: Request, resp: Response) =>
 {
     try 
     {
+        if(IsAuthenticated(req) == false)
+            return resp.render("layouts/login", {suppressNav:true});        
+
         const project = await Project.findByPk(req.params.id);
         if(project == null)
             return resp.status(404).send(Get404PageString());        
@@ -31,7 +35,7 @@ router.get("/:id", async (req: Request, resp: Response) =>
         const allProjects = await Project.findAll();
         const allPlainProjects = allProjects.map(project => project.GetAllHandlebarData());
         
-        resp.render("project", {allTasks: allPlainTasks, allUsers: allPlainUsers, project: project.GetAllHandlebarData(), allProjects: allPlainProjects});
+        resp.render("layouts/project", {allTasks: allPlainTasks, allUsers: allPlainUsers, project: project.GetAllHandlebarData(), allProjects: allPlainProjects});
     } 
     catch(error) 
     {

@@ -69,3 +69,9 @@ html, body
 {
     background-color: #198754;
 }
+
+.login-card 
+{
+    max-width: 400px;
+    width: 400px;
+}

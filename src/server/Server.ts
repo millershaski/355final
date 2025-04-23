@@ -9,7 +9,12 @@ import express, {Express, Request, Response } from "express";
 import helmet from "helmet";
 import { engine } from "express-handlebars"; 
 import { Get404PageString} from "./FileTemplates";
+import { sequelize } from "./config/SequelizeInstance";
 
+
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const routes = require('./controllers'); 
 const port = 5000;
@@ -34,19 +39,39 @@ app.use((req: Request, resp: Response, next) =>
     next(); // without a next, this request will die here
 });
 
+// parses cookies
+app.use(cookieParser());
     
 app.use(helmet());
-app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"], // this will allow js from bootstrap
-        styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"], // this will allow css from bootstrap and inline (inline css should be safe?)
-        objectSrc: ["'none'"],
-        upgradeInsecureRequests: [],
-      },
-    })
-  ); 
+app.use(helmet.contentSecurityPolicy(
+  {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://cdn.jsdelivr.net"], // this will allow js from bootstrap
+      styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"], // this will allow css from bootstrap and inline (inline css should be safe?)
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
+
+const store = new SequelizeStore({ db: sequelize });
+import {SecretKey} from "./config/SecretKey"
+
+// Setup session middleware with options
+app.use(session({
+  secret: SecretKey,
+  store: store, // Use Sequelize store for session data
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+  secure: false, // Set to true if HTTPS is enabled
+  maxAge: 1000 * 60 * 30, // 30 minutes session timeout
+  }
+}));
+// Sync the session store to create the sessions table in SQLite
+store.sync();
+  
 
   
 app.use(express.json());

@@ -47,7 +47,7 @@ function OnProjectRenameConfirmed()
 {
     const newName = GetElementTextContentOrValue("projectRenameValue");
     if(newName != null && newName.length > 0)
-        UpdateProject(projectId_, {name:newName});
+        UpdateProject(projectId_, {name:newName}, true);
 }
 
 
@@ -501,6 +501,8 @@ function OnMarkCompleteClicked(id, newValue)
 {
     UpdateTask(id, {isComplete:newValue}, true);
 }
+
+
 
 
 
