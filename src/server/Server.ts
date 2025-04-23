@@ -102,5 +102,6 @@ server.listen(port, () => console.log(`HTTP Server listening on port ${port}`));
 
 
 
-import { ResetDatabase } from "./config/DatabaseReset"
+import { ResetDatabase, EnsureProject } from "./config/DatabaseReset"
 ResetDatabase();
+EnsureProject();

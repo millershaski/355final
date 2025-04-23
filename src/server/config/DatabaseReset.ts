@@ -26,3 +26,12 @@ export const ResetDatabase = async () =>
 
     console.log("...Done resetting database");
 };
+
+
+// ensures that there's always a project with id 1
+export const EnsureProject = async () =>
+{
+  const project = await Project.findByPk(1);
+  if(project == null)
+    await Project.create({id: 1, name: "Todo"})
+}
