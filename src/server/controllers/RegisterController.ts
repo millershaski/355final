@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 import { AuthUser, AuthUserInputData} from "../models/AuthUser";
+import { ValidationError } from "sequelize";
+import { GetValidationErrorMessage } from "../ServerAuth";
 
 const router = express.Router();
 
@@ -17,9 +19,20 @@ router.post('/', async (req, res) =>
     {
         const newUser = await AuthUser.create({ username, password });
         res.send(`User ${newUser.username} registered successfully.`);
-    } catch (err : any) 
+    } 
+    catch (error) 
     {
-        res.status(500).send("Error registering user: " + err.message);
+        if(error instanceof ValidationError)
+        {
+            console.error("Error creating task:", (error as ValidationError).message); 
+            console.error("Full Error:", error); 
+            res.status(500).send(GetValidationErrorMessage(error)); 
+        }
+        else
+        {
+            console.error("Error registering user:", error); 
+            res.status(500).send(error);
+        }
     }
 });
 

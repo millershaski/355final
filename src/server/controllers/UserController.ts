@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { User, UserInputData} from "../models/User";
 import { ValidationError } from "sequelize";
+import { GetValidationErrorMessage } from "../ServerAuth";
 
 const router = express.Router();
 
@@ -35,17 +36,5 @@ router.post("/", async (req: Request, resp: Response) =>
     }
 });
 
-
-function GetValidationErrorMessage(error: ValidationError): string
-{
-    let finalMessage = "";
-    for(const someError of error.errors)
-    {
-        finalMessage += (someError.message + ", ");
-    }
-    finalMessage = finalMessage.replace(/, $/, ""); // remove trailing comma
-
-    return finalMessage;
-}
 
 module.exports = router;
