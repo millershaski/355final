@@ -76,8 +76,8 @@
                 <ul class="list-group">
                     {{#each allSubtasks}}
                     <li class="list-group-item">
-                        <div class="form-check">
-                            <input class="form-check-input me-2" type="checkbox" value="">
+                        <div class="form-check taskData" id = "taskData{{id}}" data-task-id={{id}}>
+                            <input class="form-check-input me-2 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
                             <label class="form-check-label w-100">
                                 {{name}} -- Due: {{dueDate}} -- Assignee: {{assigneeInitials}}</a>
                             </label>
