@@ -25,7 +25,7 @@ router.get("/:id", async (req: Request, resp: Response) =>
         for(const someTask of allTasks) // Task.GetAllHandlebarData is async, so we must manually await it (sure is ugly)
         {
             someTask.FixDates();
-            const plainTask = await someTask.GetAllHandlebarData();
+            const plainTask = await someTask.GetAllHandlebarData_async();
             allPlainTasks.push(plainTask);
         }
         
@@ -39,7 +39,7 @@ router.get("/:id", async (req: Request, resp: Response) =>
     } 
     catch(error) 
     {
-        console.error("Error fetching plants:", error); 
+        console.error("Error fetching project:", error); 
         resp.status(500).send("Internal Server Error"); 
     }
 });

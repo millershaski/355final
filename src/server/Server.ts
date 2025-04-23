@@ -4,7 +4,6 @@
 */
 
 
-import { createServer } from "http";
 import express, {Express, Request, Response } from "express"; 
 import helmet from "helmet";
 import { engine } from "express-handlebars"; 
@@ -94,15 +93,8 @@ app.use((req:Request, resp: Response, next) =>
 });
 
 
-
-// create and start server
-const server = createServer(app);
-server.listen(port, () => console.log(`HTTP Server listening on port ${port}`));
+import {StartServer } from "./config/ServerStarter"
 
 
+StartServer(port, app);
 
-import { ResetDatabase, EnsureProject } from "./config/DatabaseReset"
-
-// one of these must be uncommented
-ResetDatabase(); // for dev, wipes the db upon every server start
-// EnsureProject();

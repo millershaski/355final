@@ -26,7 +26,7 @@ export class Task extends Model
     // We use this method so that handlebars can correctly access the data (it can't access inherited members by default).
     // We can also perform some formatting things here.
     // This method returns plain data that handlebars can access
-    async GetAllHandlebarData()
+    async GetAllHandlebarData_async()
     {
         let data = 
         {            
@@ -53,7 +53,7 @@ export class Task extends Model
         let allSubtaskData = [];
         for(const someSubtask of allSubtasks)
         {
-            const subtaskData = await someSubtask.GetAllHandlebarData();
+            const subtaskData = await someSubtask.GetAllHandlebarData_async();
             allSubtaskData.push(subtaskData);
         }
         data.allSubtasks = allSubtaskData;
@@ -189,8 +189,12 @@ export class TaskInputData
     GetDate(key: string, req: Request): Date | undefined
     {
         const stringValue = this.GetString(key, req);
+
         if(stringValue)
-            return new Date(stringValue);
+        {           
+            const [year, month, day] = stringValue.split('-');
+            return new Date(Number(year), Number(month) - 1, Number(day));
+        }       
         else
             return undefined;
     }

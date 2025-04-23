@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () =>
     InitializeAddUserButton();
     InitializeAllSelectAssigneeButtons();
     InitializeAllMarkCompleteButtons();
+    
+    InitializeAllEditableInputs(); // this will register them to autosave
 });
 
 
@@ -88,6 +90,7 @@ async function ActivateExpandedTask(id)
 
     selectedActiveTaskId_ = id;
     selectedActiveTaskData_ = {isComplete: GetIsCompleteFor(id)};
+    taskData.dataset.taskId = id;
 
     taskData.classList.remove("hidden");
     const data = GetAllTaskJSONData(id);
@@ -175,12 +178,19 @@ function GetTargetUrlFromTaskId(id)
 
 function GetAllTaskJSONData(id)
 {
-    const taskData = document.getElementById("taskData"+id);
+    const taskData = GetTaskDataFromId(id);
 
     if(taskData == null)
         return {};   
     
     return GetAllTaskJSONDataFromParentElement(taskData);  
+}
+
+
+
+function GetTaskDataFromId(id)
+{
+    return document.getElementById("taskData"+id);
 }
 
 
@@ -206,6 +216,13 @@ function GetAllTaskJSONDataFromParentElement(parentElement)
 function GetElementTextContentOrValue(elementName, taskData)
 {
     const foundElement = FindElement(taskData, elementName); 
+    return GetPassedElementTextContentOrValue(foundElement);
+}
+
+
+
+function GetPassedElementTextContentOrValue(foundElement)
+{
     if(foundElement == null)
         return;
 
@@ -272,14 +289,6 @@ async function SaveExpandedTask()
 
 function InitializeAllDeleteButtons()
 {
-    /*const allButtons = document.getElementsByClassName("deleteTaskButton");
-    for(button of allButtons)
-    {
-        let id = GetTaskIdOfArbitraryElement(button);
-        if(id > 0)
-            button.onclick = () => OnDeleteTaskClicked(id); // just going to pass the id of the selected task 
-    }*/
-
     const deleteButton = document.getElementById("deleteActiveTaskButton");
     if(deleteButton != null)
         deleteButton.onclick = () => {OnDeleteTaskClicked(selectedActiveTaskId_);}
@@ -396,7 +405,6 @@ async function OnAddUserClicked()
     if(ValidateNewUserData(data) == false)
         return;
     
-    console.log("Saving new user to: " + targetUrl);
     const response = await fetch(targetUrl,
     {
         method: 'POST',
@@ -411,8 +419,6 @@ async function OnAddUserClicked()
     }
     else
         ForceRefresh();
-
-    console.log(response);
 }
 
 
@@ -576,4 +582,72 @@ function InitializeAllMarkCompleteButtons()
 function OnMarkCompleteClicked(id, newValue)
 {
     UpdateTask(id, {isComplete:newValue}, true);
+}
+
+
+
+function InitializeAllEditableInputs()
+{
+    const allDates = document.getElementsByClassName("dueDate");
+    for(const someDate of allDates)
+    {
+        someDate.addEventListener("change", async (event) => 
+        {
+            const id = GetTaskIdOfArbitraryElement(someDate); // found everytime so that expanded task works correctly (because the expanded task's id ca change all the time)
+
+            await UpdateTask(id, {dueDate: GetPassedElementTextContentOrValue(someDate)});
+            RefreshElement(id, "dueDate", "dueDate", "expandedDueDate");
+        });
+    }
+}
+
+
+
+// property name is the key of the key-value pair that will be returned when we fetch a GET
+async function RefreshElement(taskId, propertyName, className, expandedTaskId)
+{
+    const newValue = await FetchTaskValue(taskId, propertyName);
+
+    if(newValue == null || newValue == undefined)
+        return;
+
+    const taskData = GetTaskDataFromId(taskId);
+    if(taskData != null)
+        SetElementTextContentOrValue(newValue, taskData, className);
+
+    if(selectedActiveTaskId_ == taskId) // also refresh the element in expandedTask
+        SetElementTextContentOrValue(newValue, null, expandedTaskId);
+}
+
+
+
+// fetches the passed task value from the server.
+// note that the returned value is actually in the handlebars data format (as this is useful for clients)
+async function FetchTaskValue(taskId, propertyName)
+{
+    const targetUrl = GetTargetUrlFromTaskId(taskId) + "?target=" + propertyName;
+    
+    const response = await fetch(targetUrl,
+    {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    const asJson = await response.json();
+    return asJson.value;
+}
+
+
+
+function SetElementTextContentOrValue(newValue, taskData, elementName)
+{
+    const foundElement = FindElement(taskData, elementName); 
+
+    if(foundElement != null)
+    {
+        if(foundElement.value != null && foundElement.value != undefined)
+            foundElement.value = newValue;
+        else
+            foundElement.textContent = newValue;
+    }
 }

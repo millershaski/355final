@@ -44,6 +44,7 @@ router.delete("/:id", async (req: Request, resp: Response) =>
 });
 
 
+
 // creates a generic new task
 router.post("/", async (req: Request, resp: Response) =>
 {
@@ -55,6 +56,35 @@ router.post("/", async (req: Request, resp: Response) =>
     catch (error) 
     {
         console.error("Error creating task:", error); 
+        resp.status(500).send("Internal Server Error"); 
+    }
+});
+
+
+
+// gets the target data from the specified task
+router.get("/:id", async (req: Request, resp: Response) =>
+{
+    try 
+    {
+        const task = await Task.findByPk(req.params.id);
+        if(task == null)
+            return resp.status(404).json({ error: 'Task not found' });        
+
+        const data = await task.GetAllHandlebarData_async();
+        const key = req.query.target
+
+        console.log("sending data: " + key + " : " + data[key as keyof typeof data]);
+
+        if(key == null) // we send everything if no target was passed
+            resp.json(data);             
+        else
+            resp.json({value: data[key as keyof typeof data]});
+    } 
+
+    catch (error) 
+    {
+        console.error("Error fetching task:", error); 
         resp.status(500).send("Internal Server Error"); 
     }
 });

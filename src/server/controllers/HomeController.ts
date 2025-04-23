@@ -14,7 +14,7 @@ router.get("", async (req: Request, resp: Response) =>
     } 
     catch (error) 
     {
-        console.error("Error fetching plants:", error); 
+        console.error("Error:", error); 
         resp.status(500).send("Internal Server Error"); 
     }
 });
