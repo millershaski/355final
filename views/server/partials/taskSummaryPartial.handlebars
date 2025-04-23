@@ -2,7 +2,7 @@
     <div class="card mb-3 border-success taskData" id = "taskData{{id}}" data-task-id={{id}}>
         <div class="card-body">
             <div class="d-flex justify-content-between">            
-                <h5 class="card-title text-success taskName"><a href = "#">{{name}}</a>&nbsp;&nbsp;&nbsp;<span class="badge bg-success">Completed</span></h5>
+                <h5 class="card-title text-success taskName"><a class = "text-reset text-decoration-none" href = "#">{{name}}</a>&nbsp;&nbsp;&nbsp;<span class="badge bg-success">Completed</span></h5>
                 <div class="text-end">
                     <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
                         <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
@@ -56,7 +56,7 @@
     <div class="card mb-3 taskData" id = "taskData{{id}}" data-task-id={{id}}>
         <div class="card-body">
             <div class="d-flex justify-content-between">            
-                <h5 class="card-title taskName"><a href = "#">{{name}}</a></h5>
+                <h5 class="card-title taskName"><a class = "text-reset text-decoration-none" href = "#">{{name}}</a></h5>
                 <div class="text-end">
                     <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
                         <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
@@ -75,17 +75,21 @@
                 <h6 class="fw-bold">Subtasks</h6>
                 <ul class="list-group">
                     {{#each allSubtasks}}
-                    <li class="list-group-item">
-                        <div class="form-check taskData" id = "taskData{{id}}" data-task-id={{id}}>
-                            <input class="form-check-input me-2 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
-                            <label class="form-check-label w-100">
-                                <a href = "#" class = "taskName">{{name}}</a> 
-                                <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
-                                <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>
-                                <textarea class="form-control description" hidden>{{description}}</textarea>
-                            </label>
-                        </div>
-                    </li>
+                        <li class="list-group-item">
+                            <div class="form-check taskData" id = "taskData{{id}}" data-task-id={{id}}>
+                                <input class="form-check-input me-2 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
+                                <label class="form-check-label w-100">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a href = "#" class = "text-reset text-decoration-none taskName">{{name}}</a> 
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
+                                            <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>
+                                        </div>
+                                        <textarea class="form-control description" hidden>{{description}}</textarea>
+                                    </div>
+                                </label>
+                            </div>
+                        </li>
                     {{/each}}                
                 </ul>                
             </div>
