@@ -31,7 +31,7 @@ export class Task extends Model
         let data = 
         {            
             id: this.id,
-            name: this.name,
+            name: this.GetFixedName(),
             description: this.description,
             dueDate: this.ToInputSafeDate(this.dueDate),
             isComplete: this.isComplete,
@@ -61,6 +61,17 @@ export class Task extends Model
         return data;
     }
     
+
+
+    // prevents empty names or names of only whitespace
+    GetFixedName(): string
+    {
+        if(this.name.length == 0 || /^\s*$/.test(this.name) == true) // empty string or the amount of whitespace is equal to the length (it's all whitespace)
+            return "[No Name]";
+        else
+            return this.name;
+    }
+
 
 
     ToInputSafeDate(date: Date): string
@@ -110,7 +121,7 @@ export class Task extends Model
     // for whatever reason, the timezone is not correct when we import the dates, so the day is off by one. This hacky fix should be fine in the eastern time-zone
     FixDates()
     {
-        this.dueDate = this.IncreaseDayByOne(this.dueDate);
+        // this.dueDate = this.IncreaseDayByOne(this.dueDate);
     }
 
 
