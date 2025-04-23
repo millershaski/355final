@@ -19,8 +19,6 @@ export class Task extends Model
 
     declare parentTaskId: number; // <= 0 is null
     declare allSubtasks: number[]; // order stored and can be changed by user
-
-    user_: User | null = null;
     
 
     // We use this method so that handlebars can correctly access the data (it can't access inherited members by default).
@@ -88,7 +86,7 @@ export class Task extends Model
     // Updates this instance with data from newData, then invokes save
     async UpdateWith(newData: TaskInputData)
     {
-        console.log("Updating task with: " + JSON.stringify(newData));
+        console.log("Updating task " + this.id + " with: " + JSON.stringify(newData));
 
         if(newData == null)
             return;

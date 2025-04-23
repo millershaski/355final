@@ -518,25 +518,29 @@ function InitializeAllConfirmAssigneeButtons()
     const allConfirmUserOptions = document.getElementsByClassName("confirmUserOption");
     for(const confirmButton of allConfirmUserOptions)
     {
-        confirmButton.onclick = () => {OnConfirmAssigneeClicked(confirmButton, confirmButton.dataset.userId);}
+        confirmButton.onclick = () => {OnConfirmAssigneeClicked(confirmButton.dataset.userId);}
     }
 }
 
 
 
-function OnConfirmAssigneeClicked(confirmButton, assigneeId)
+async function OnConfirmAssigneeClicked(assigneeId)
 {
-    UpdateTask(taskIdForAssigneeChange_, {assigneeId:assigneeId}, false);
+    await UpdateTask(taskIdForAssigneeChange_, {assigneeId:assigneeId}, false);    
+    
+    // simulate a click of the close button to hide the modal window
+    const closeButton = document.getElementById("closeUserModalButton"); 
+    if(closeButton != null)
+        closeButton.dispatchEvent(new Event("click"));
 
-    //console.log("Dispatching event: " + lastUsedOpenAssigneeMenuElement_);
-    //if(lastUsedOpenAssigneeMenuElement_ != null)
-        //lastUsedOpenAssigneeMenuElement_.dispatchEvent(new CustomEvent("change"));
+    if(lastUsedOpenAssigneeMenuElement_ != null)
+        lastUsedOpenAssigneeMenuElement_.dispatchEvent(new CustomEvent("change"));
 }
 
  
 
 async function UpdateTask(taskId, payload, forceRefresh)
-{
+{    
     const targetUrl = GetTargetUrlFromTaskId(taskId);
     
     const response = await fetch(targetUrl,
@@ -609,11 +613,8 @@ function InitializeEditableInputs(outPropertyName, retrievedPropertyName, classN
     for(const someElement of allElements)
     {
         someElement.addEventListener("change", async (event) => 
-        {
-            console.log("OnChange: " + retrievedPropertyName);
-            
+        {            
             const id = GetTaskIdOfArbitraryElement(someElement); // found everytime so that expanded task works correctly (because the expanded task's id ca change all the time)
-
             if(outPropertyName != null)
                 await UpdateTask(id, {[outPropertyName]: GetPassedElementTextContentOrValue(someElement)});
 
