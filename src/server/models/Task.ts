@@ -2,6 +2,7 @@ import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../config/SequelizeInstance"; 
 import { Validator } from "./Validator";
 import { Request } from "express";
+import { Project } from "./Project";
 
 
 export class Task extends Model 
@@ -261,14 +262,14 @@ Task.init(
     allSubtasks:
     {
         type: DataTypes.JSON,
-        allowNull: true
+        allowNull: true,
     }
 
 },
 {
     sequelize, 
     modelName: "Task",
-    tableName: 'Tasks',  // this can be omitted, as the name will automatically be made the plural version of the modelName
+    tableName: "Tasks",  // this can be omitted, as the name will automatically be made the plural version of the modelName
     timestamps: false, // I don't care when the records were created or updated 
     underscored: true
 });
@@ -285,7 +286,3 @@ Task.hasMany(Task); // tasks can have many subtasks
 
 User.hasMany(Task, {foreignKey: "assigneeId"}); // a user can have many tasks
 Task.belongsTo(User);
-
-
-// getBar
-// setBar
