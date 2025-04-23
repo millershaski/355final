@@ -11,10 +11,12 @@ html, body
     top: 0;
 }
   
-.main-content {
+.main-content 
+{
     flex-grow: 1;
 }
   
+
 .expanded-view 
 {
     width: 400px;

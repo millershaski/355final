@@ -2,7 +2,7 @@
     <div class="card mb-3 border-success taskData" id = "taskData{{id}}" data-task-id={{id}}>
         <div class="card-body">
             <div class="d-flex justify-content-between">            
-                <h5 class="card-title text-success taskName"><a class = "text-reset text-decoration-none" href = "#">{{name}}</a>&nbsp;&nbsp;&nbsp;<span class="badge bg-success">Completed</span></h5>
+                <h5 class="card-title text-success"><a class = "taskName text-reset text-decoration-none" href = "#">{{name}}</a>&nbsp;&nbsp;&nbsp;<span class="badge bg-success">Completed</span></h5>
                 <div class="text-end">
                     <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
                         <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
@@ -16,33 +16,26 @@
                 <label for="description1" class="form-label">Description</label>
                 <textarea class="form-control description" rows="3">{{description}}</textarea>
             </div>
-            <div class="mt-3">
+             <div class="mt-3">
                 <h6 class="fw-bold">Subtasks</h6>
                 <ul class="list-group">
-                <li class="list-group-item">
-                    <div class="form-check">
-                    <input class="form-check-input me-2" type="checkbox" value="">
-                    <label class="form-check-label w-100">
-                        Header design — Due: April 22, 2025 — <a href="#" data-bs-toggle="modal" data-bs-target="#selectUserModal">Assigned to Alice</a>
-                    </label>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="form-check">
-                    <input class="form-check-input me-2" type="checkbox" value="">
-                    <label class="form-check-label w-100">
-                        Footer layout — Due: April 23, 2025 — <a href="#" data-bs-toggle="modal" data-bs-target="#selectUserModal">Assigned to Bob</a>
-                    </label>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="form-check">
-                    <input class="form-check-input me-2" type="checkbox" value="">
-                    <label class="form-check-label w-100">
-                        Navigation bar — Due: April 24, 2025 — <a href="#" data-bs-toggle="modal" data-bs-target="#selectUserModal">Assigned to Carol</a>
-                    </label>
-                    </div>
-                </li>
+                    {{#each allSubtasks}}
+                        <li class="list-group-item">
+                            <div class="form-check taskData d-flex align-items-center" id = "taskData{{id}}" data-task-id={{id}}>
+                                <input class="form-check-input me-2 mb-1 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
+                                <label class="form-check-label w-100">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a href = "#" class = "text-reset text-decoration-none taskName">{{name}}</a> 
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
+                                            <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>
+                                        </div>
+                                        <textarea class="form-control description" hidden>{{description}}</textarea>
+                                    </div>
+                                </label>
+                            </div>
+                        </li>
+                    {{/each}}                
                 </ul>                
             </div>
             <br>
@@ -56,7 +49,7 @@
     <div class="card mb-3 taskData" id = "taskData{{id}}" data-task-id={{id}}>
         <div class="card-body">
             <div class="d-flex justify-content-between">            
-                <h5 class="card-title taskName"><a class = "text-reset text-decoration-none" href = "#">{{name}}</a></h5>
+                <h5 class="card-title"><a class = "taskName text-reset text-decoration-none" href = "#">{{name}}</a></h5>
                 <div class="text-end">
                     <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
                         <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
@@ -76,8 +69,8 @@
                 <ul class="list-group">
                     {{#each allSubtasks}}
                         <li class="list-group-item">
-                            <div class="form-check taskData" id = "taskData{{id}}" data-task-id={{id}}>
-                                <input class="form-check-input me-2 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
+                            <div class="form-check taskData d-flex align-items-center" id = "taskData{{id}}" data-task-id={{id}}>
+                                <input class="form-check-input me-2 mb-1 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
                                 <label class="form-check-label w-100">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <a href = "#" class = "text-reset text-decoration-none taskName">{{name}}</a> 
