@@ -56,11 +56,10 @@ app.use(helmet.contentSecurityPolicy(
 );
 
 const store = new SequelizeStore({ db: sequelize });
-import {SecretKey} from "./config/SecretKey"
 
 // Setup session middleware with options
 app.use(session({
-  secret: SecretKey,
+  secret: process.env.SECRET_KEY,
   store: store, // Use Sequelize store for session data
   resave: false,
   saveUninitialized: false,
