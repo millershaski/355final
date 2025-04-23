@@ -118,7 +118,12 @@ User.init(
     name: 
     {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate:
+        {
+          len:[1, 100] // must be at least 1 character long
+        }
     },
     email:
     {

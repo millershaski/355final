@@ -78,7 +78,12 @@ async function SendToServer(method, targetUrl)
         }
     }
     else
-        window.location.href = '/project/1'; // Redirect on success
+    {
+        if(window.location.href.includes("/project/") == true) // if we're already in a project, just refresh
+            location.reload();
+        else
+            window.location.href = '/project/1'; // Redirect on success
+    }
 }
 
 

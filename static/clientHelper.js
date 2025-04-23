@@ -342,6 +342,10 @@ async function CreateTask()
 
 function InitializeAddUserButton()
 {
+    const openButton = document.getElementById("openAddUserButton");
+    if(openButton != null)
+        openButton.onclick = OnOpenAddUserClicked;
+
     const button = document.getElementById("addUserButton");
     if(button == null)
         return;
@@ -351,24 +355,74 @@ function InitializeAddUserButton()
 
 
 
-async function OnAddUserClicked()
-{
-    // TODO: ensure that email is in valid format
-    console.log("Client side validate here: ");
-    
+function OnOpenAddUserClicked()
+{ 
+    const errorDiv = document.getElementById("errorMessageAddUser");
+    if(errorDiv != null)
+        errorDiv.classList.add('d-none'); // just hiding the error message in the event that something was previously there    
+}
 
+
+
+async function OnAddUserClicked()
+{        
     const targetUrl = window.location.origin + "/user/"
+    const data = GetAllNewUserJSONData();
+    if(ValidateNewUserData(data) == false)
+        return;
     
     console.log("Saving new user to: " + targetUrl);
     const response = await fetch(targetUrl,
     {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(GetAllNewUserJSONData()) 
+        body: JSON.stringify(data) 
     });
 
+    if(response.ok == false)
+    {
+        const errorMessage = await response.text();
+        DisplayErrorMessage(errorMessage || "Creating user failed", "errorMessageAddUser");        
+    }
+    else
+        ForceRefresh();
+
     console.log(response);
-    ForceRefresh();
+}
+
+
+
+// Displays an error and returns false if validation fails
+function ValidateNewUserData(data)
+{
+    // Validate name
+    if (data.name === "") 
+    {
+        DisplayErrorMessage("Name cannot be empty", "errorMessageAddUser")
+        return false;
+    }
+    
+    // Validate email format using regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(data.email) == false) 
+    {
+        DisplayErrorMessage("Please enter a valid email address", "errorMessageAddUser");
+        return false;
+    }
+
+    return true;
+}
+
+
+
+function DisplayErrorMessage(message, elementId)
+{
+    const errorDiv = document.getElementById(elementId);
+    if(errorDiv != null)
+    {
+        errorDiv.textContent = message;
+        errorDiv.classList.remove("d-none");
+    }
 }
 
 

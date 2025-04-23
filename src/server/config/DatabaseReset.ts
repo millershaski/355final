@@ -9,9 +9,10 @@ export const ResetDatabase = async () =>
     console.log("Resetting database...");
 
     await sequelize.drop(); // Clears tables before sync
-    await sequelize.sync();
+    await sequelize.sync({force:true});
 
 	
+    await Project.create({id: 1, name: "Todo"})
     await Project.create({id: 2, name: "Project1"})
     await Project.create({id: 3, name: "Sprint"})
     
@@ -34,8 +35,8 @@ export const ResetDatabase = async () =>
 // ensures that there's always a project with id 1
 export const EnsureProject = async () =>
 {
+    
 	await sequelize.sync();
-
 	
 	const project = await Project.findByPk(1);
 	if(project == null)
