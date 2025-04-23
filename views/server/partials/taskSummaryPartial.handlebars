@@ -79,7 +79,10 @@
                         <div class="form-check taskData" id = "taskData{{id}}" data-task-id={{id}}>
                             <input class="form-check-input me-2 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
                             <label class="form-check-label w-100">
-                                {{name}} -- Due: {{dueDate}} -- Assignee: {{assigneeInitials}}</a>
+                                <a href = "#" class = "taskName">{{name}}</a> 
+                                <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
+                                <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>
+                                <textarea class="form-control description" hidden>{{description}}</textarea>
                             </label>
                         </div>
                     </li>

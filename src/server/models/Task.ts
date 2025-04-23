@@ -58,8 +58,6 @@ export class Task extends Model
         }
         data.allSubtasks = allSubtaskData;
 
-        console.log(data.allSubtasks.length);
-
         return data;
     }
     
