@@ -49,6 +49,17 @@ export class Task extends Model
                 data.assigneeInitials = user.GetInitials();
         }
 
+        const allSubtasks = await (this as any).getTasks();
+        let allSubtaskData = [];
+        for(const someSubtask of allSubtasks)
+        {
+            const subtaskData = await someSubtask.GetAllHandlebarData();
+            allSubtaskData.push(subtaskData);
+        }
+        data.allSubtasks = allSubtaskData;
+
+        console.log(data.allSubtasks.length);
+
         return data;
     }
     
@@ -252,7 +263,7 @@ Task.init(
     projectId:
     {
         type: DataTypes.NUMBER,
-        allowNull: false, // all tasks must belong to a project
+        allowNull: true, // all high-level tasks must belong to a project, but subtasks don't have this constraint
         references:
         {
             model: "Projects",
@@ -280,8 +291,8 @@ import {User} from "./User";
 
 
 
-Task.hasOne(Task, {foreignKey: "parentTaskId"}); // a task can have only a single parent task 
-Task.hasMany(Task); // tasks can have many subtasks
+Task.hasMany(Task, {foreignKey: "parentTaskId"}); // tasks can have many subtasks
+Task.hasOne(Task); // a task can have only a single parent task 
 
 
 User.hasMany(Task, {foreignKey: "assigneeId"}); // a user can have many tasks
