@@ -1,6 +1,6 @@
 
     <!-- Sidebar Navigation -->
-    <nav class="bg-dark text-white p-3 sidebar">
+    <nav class="bg-dark text-white p-3 sidebar d-flex flex-column vh-100">
         <h4 class="text-white">Menu</h4>
         <ul class="nav flex-column">
             {{#each allProjects}}
@@ -15,5 +15,9 @@
                 <div class="user-circle">{{this.initials}}</div>
             {{/each}}
             <div class="user-circle" data-bs-toggle="modal" data-bs-target="#addUserModal">+</div>
+        </div>
+        
+        <div class="mt-auto">
+            <a href="/logout/" class="btn btn-outline-light w-100">Logout</a>
         </div>
     </nav>

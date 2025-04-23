@@ -5,12 +5,14 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 
+// display login page
 router.get("/", async (req:Request, res:Response) => 
 {    
     res.render("layouts/login", {suppressNav:true});
 });
 
 
+// handle login request
 router.put("/", async (req:any, res:any) => 
 {
     const username = req.body["username"];

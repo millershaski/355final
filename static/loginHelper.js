@@ -1,5 +1,6 @@
 
 
+
 document.addEventListener("DOMContentLoaded", () => 
 {      
     InitializeAllLoginButtons();
@@ -40,20 +41,100 @@ function OnLoginFormSubmit(event)
 
 
 
-function OnLoginClicked()
+async function OnLoginClicked()
 {
     lastClickedButton_ = "login";
     if(wasLoginSubmitted_ == false)
         return;
 
-    console.log("OnClick");
+    targetUrl = window.location.origin + "/login/";
+    SendToServer("PUT", targetUrl);
 }
 
 
 
-function OnRegisterClicked()
+async function SendToServer(method, targetUrl)
+{
+    const username = GetElementTextContentOrValue("username");
+    const password = GetElementTextContentOrValue("password");
+    
+    const response = await fetch(targetUrl,
+    {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({username:username, password:password}) 
+    });
+    
+    console.log(response);
+
+    if(response.ok == false)
+    {
+        const errorDiv = document.getElementById('error-message');
+        if(errorDiv != null)
+        {
+            const errorMessage = await response.text();
+            errorDiv.textContent = errorMessage || "Login Failed";
+            errorDiv.classList.remove('d-none');
+        }
+    }
+    else
+        window.location.href = '/project/1'; // Redirect on success
+}
+
+
+
+async function OnRegisterClicked()
 {
     lastClickedButton_ = "register";
     if(wasLoginSubmitted_ == false)
         return;    
+
+    targetUrl = window.location.origin + "/register/";
+    SendToServer("POST", targetUrl); 
+}
+
+
+
+function GetElementTextContentOrValue(elementName, taskData)
+{
+    const foundElement = FindElement(taskData, elementName); 
+    if(foundElement == null)
+        return;
+
+    if(foundElement.textContent == undefined || foundElement.textContent.length == 0)
+        return foundElement.value;
+    else
+        return foundElement.textContent;
+}
+
+
+
+function FindElement(parentElement, elementName)
+{
+    if(parentElement == null)
+        return document.getElementById(elementName);
+    else
+        return parentElement.querySelector("." + elementName);  
+}
+
+
+
+function GetElementTextContent(elementName, taskData)
+{
+    const foundElement = FindElement(taskData, elementName); 
+    if(foundElement == null)
+        return;
+
+    return foundElement.textContent;
+}
+
+
+
+function GetElementValue(elementName, taskData)
+{
+    const foundElement = FindElement(taskData, elementName); 
+    if(foundElement == null)
+        return;
+
+    return foundElement.value;
 }
