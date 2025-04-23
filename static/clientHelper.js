@@ -226,7 +226,7 @@ function GetPassedElementTextContentOrValue(foundElement)
     if(foundElement == null)
         return;
 
-    if(foundElement.textContent == undefined || foundElement.textContent.length == 0)
+    if(foundElement.value != null && foundElement.value != undefined)
         return foundElement.value;
     else
         return foundElement.textContent;
@@ -483,28 +483,31 @@ function InitializeAllOpenAssigneeMenuButtons()
 {
     const expandedUserButton = document.getElementById("expandedAssignee");
     if(expandedUserButton != null)
-        expandedUserButton.onclick = OnExpandedSelectAssigneeClicked;
+        expandedUserButton.onclick = () => {OnExpandedSelectAssigneeClicked(expandedUserButton)};
 
     const allAssigneeButtons = document.getElementsByClassName("assigneeInitials");
     for(const button of allAssigneeButtons)
     {
         const id = GetTaskIdOfArbitraryElement(button);
         if(id > 0)
-            button.onclick = () => OnSummarySelectAssigneeClicked(id);
+            button.onclick = () => {OnSummarySelectAssigneeClicked(id, button)};
     }
 }
 
 
 
-function OnExpandedSelectAssigneeClicked()
+let lastUsedOpenAssigneeMenuElement_;
+function OnExpandedSelectAssigneeClicked(element)
 {
+    lastUsedOpenAssigneeMenuElement_ = element;
     taskIdForAssigneeChange_ = selectedActiveTaskId_;
 }
 
 
 
-function OnSummarySelectAssigneeClicked(taskId)
+function OnSummarySelectAssigneeClicked(taskId, element)
 {
+    lastUsedOpenAssigneeMenuElement_ = element
     taskIdForAssigneeChange_ = taskId;
 }
 
@@ -515,15 +518,19 @@ function InitializeAllConfirmAssigneeButtons()
     const allConfirmUserOptions = document.getElementsByClassName("confirmUserOption");
     for(const confirmButton of allConfirmUserOptions)
     {
-        confirmButton.onclick = () => {OnConfirmAssigneeClicked(confirmButton.dataset.userId);}
+        confirmButton.onclick = () => {OnConfirmAssigneeClicked(confirmButton, confirmButton.dataset.userId);}
     }
 }
 
 
 
-function OnConfirmAssigneeClicked(assigneeId)
+function OnConfirmAssigneeClicked(confirmButton, assigneeId)
 {
-    UpdateTask(taskIdForAssigneeChange_, {assigneeId:assigneeId}, true);
+    UpdateTask(taskIdForAssigneeChange_, {assigneeId:assigneeId}, false);
+
+    //console.log("Dispatching event: " + lastUsedOpenAssigneeMenuElement_);
+    //if(lastUsedOpenAssigneeMenuElement_ != null)
+        //lastUsedOpenAssigneeMenuElement_.dispatchEvent(new CustomEvent("change"));
 }
 
  
@@ -588,15 +595,29 @@ function OnMarkCompleteClicked(id, newValue)
 
 function InitializeAllEditableInputs()
 {
-    const allDates = document.getElementsByClassName("dueDate");
-    for(const someDate of allDates)
-    {
-        someDate.addEventListener("change", async (event) => 
-        {
-            const id = GetTaskIdOfArbitraryElement(someDate); // found everytime so that expanded task works correctly (because the expanded task's id ca change all the time)
+    InitializeEditableInputs("dueDate", "dueDate", "dueDate", "expandedDueDate");
+    InitializeEditableInputs("description", "description", "description", "expandedDescription");
+    InitializeEditableInputs("name", "name", "taskName", "expandedTaskName");
+    InitializeEditableInputs(null, "assigneeInitials", "assigneeInitials", "expandedAssignee"); // assignee is a bit special, and the data is automatically sent to the server
+}
 
-            await UpdateTask(id, {dueDate: GetPassedElementTextContentOrValue(someDate)});
-            RefreshElement(id, "dueDate", "dueDate", "expandedDueDate");
+
+
+function InitializeEditableInputs(outPropertyName, retrievedPropertyName, className, expandedTaskId)
+{
+    const allElements = document.getElementsByClassName(className);
+    for(const someElement of allElements)
+    {
+        someElement.addEventListener("change", async (event) => 
+        {
+            console.log("OnChange: " + retrievedPropertyName);
+            
+            const id = GetTaskIdOfArbitraryElement(someElement); // found everytime so that expanded task works correctly (because the expanded task's id ca change all the time)
+
+            if(outPropertyName != null)
+                await UpdateTask(id, {[outPropertyName]: GetPassedElementTextContentOrValue(someElement)});
+
+            RefreshElement(id, retrievedPropertyName, className, expandedTaskId);
         });
     }
 }
