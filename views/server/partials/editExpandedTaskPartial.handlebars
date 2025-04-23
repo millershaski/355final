@@ -20,20 +20,8 @@
         <label class="form-label">Assignee</label>
         <div class="user-circle" id = "expandedAssignee" data-bs-toggle="modal" data-bs-target="#selectUserModal">+</div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Subtasks</label>
-        <div class="mb-2 d-flex gap-2">
-        <input type="text" class="form-control" placeholder="Subtask description">
-        <button class="btn btn-outline-secondary">Add</button>
-        </div>
-        <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            Example subtask
-            <button class="btn btn-sm btn-danger">Remove</button>
-        </li>
-        </ul>
-    </div>
 
     <button class="btn btn-success" id = "expandedMarkComplete">Mark Complete</button>
     <button class="btn btn-primary" id = "expandedSaveButton">Save Changes</button>
+    <button class="btn btn-danger" id = "deleteActiveTaskButton" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
 </div>

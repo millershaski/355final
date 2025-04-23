@@ -272,13 +272,17 @@ async function SaveExpandedTask()
 
 function InitializeAllDeleteButtons()
 {
-    const allButtons = document.getElementsByClassName("deleteTaskButton");
+    /*const allButtons = document.getElementsByClassName("deleteTaskButton");
     for(button of allButtons)
     {
         let id = GetTaskIdOfArbitraryElement(button);
         if(id > 0)
             button.onclick = () => OnDeleteTaskClicked(id); // just going to pass the id of the selected task 
-    }
+    }*/
+
+    const deleteButton = document.getElementById("deleteActiveTaskButton");
+    if(deleteButton != null)
+        deleteButton.onclick = () => {OnDeleteTaskClicked(selectedActiveTaskId_);}
 
     const confirmDelete = document.getElementById("confirmDeleteButton");
     if(confirmDelete != null)
@@ -322,6 +326,13 @@ function InitializeAddTaskButton()
     const addTaskButton = document.getElementById("addTaskButton");
     if(addTaskButton != null)
         addTaskButton.onclick = CreateTask;
+
+    const allAddSubtaskButtons = document.getElementsByClassName("addSubtaskButton");
+    for(const subtaskButton of allAddSubtaskButtons)
+    {
+        const taskId = GetTaskIdOfArbitraryElement(subtaskButton);
+        subtaskButton.onclick = () => {OnAddSubtaskClicked(taskId);}
+    }
 }
 
 
@@ -333,6 +344,20 @@ async function CreateTask()
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({projectId: projectId_}) 
+    });
+    
+    ForceRefresh();
+}
+
+
+
+async function OnAddSubtaskClicked(parentId)
+{
+    await fetch(GetTargetUrlFromTaskId(""),
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({name: "subtask", parentTaskId: parentId}) 
     });
     
     ForceRefresh();
@@ -552,148 +577,3 @@ function OnMarkCompleteClicked(id, newValue)
 {
     UpdateTask(id, {isComplete:newValue}, true);
 }
-
-
-
-
-
-/*
-function InitializePlantFormNew()
-{
-    const form = document.getElementById("plantForm");
-    if(form == null)
-        return;
-
-    form.addEventListener("submit", (event) =>
-    {
-        if(form.checkValidity() == true) 
-            CreateCustomPostRequest(form);        
-
-        event.preventDefault();
-        event.stopPropagation(); // we never want to submit, because we're going to send a custom request to the server
-        
-        form.classList.add("was-validated");
-        
-    }, false);
-}
-
-
-
-async function CreateCustomPutRequest(form)
-{
-    try 
-    {        
-        console.log("Putting to: " + window.location.href);
-
-        const response = await fetch(window.location.href,
-        {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(GetAllEditFormJSONData(form)) // edit data is the same as new data, so we can just re-use this
-        });
-
-        if(response.ok == false)
-            window.location.href = "/plants/addFail";
-    }
-    catch
-    {
-    }
-}
-
-
-
-function InitializePlantFormEdit()
-{
-    const form = document.getElementById("plantFormEdit");
-    if(form == null)
-        return;
-
-    form.addEventListener("submit", (event) =>
-    {
-        if(form.checkValidity() == true) 
-            CreateCustomPutRequest(form);        
-
-        event.preventDefault();
-        event.stopPropagation(); // we never want to submit, because we're going to send a custom request to the server
-        form.classList.add("was-validated");
-        
-    }, false);
-}
-
-
-
-async function CreateCustomPutRequest(form)
-{
-    try 
-    {        
-        const response = await fetch(window.location.href,
-        {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(GetAllEditFormJSONData(form))
-        });
-
-        if(response.ok == false)       
-            window.location.href = "/plants/changeFail";
-    }
-    catch
-    {
-    }
-}
-
-
-
-function GetAllEditFormJSONData(form)
-{
-    if(form == null)
-        return {};
-
-    const formData = new FormData(form);
-    
-    const data = 
-    {
-        plantLabel: formData.get("plantLabel"),
-        species: formData.get("species"),
-        plantDate: formData.get("plantDate"),
-        wateringSchedule: formData.get("wateringSchedule"),
-        lastWaterDate: formData.get("lastWaterDate"),
-        notes: formData.get("notes")        
-    };
-
-    return data;
-}
-
-
-
-function InitializeDeleteConfirm()
-{
-    const button = document.getElementById("confirmDeleteButton");
-    if(button == null)
-        return;
-
-    button.onclick = OnDeleteClicked;
-}
-
-
-
-// Handles delete requests when the user confirms a delete
-async function OnDeleteClicked()
-{    
-    // splitting should make this a bit more safe, in the event that parameters were passed to the url
-    let deletePath = (window.location.href.split('?')[0]);
-    if(deletePath.endsWith("/") == false)
-        deletePath += "/";
-
-    deletePath += "delete";
-    
-    const response = await fetch(window.location.href,
-        {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-        if(response.ok == true)       
-            window.location.href = "/plants/deleteSuccess";
-        else        
-            window.location.href = "/plants/deleteFail";
-}*/
