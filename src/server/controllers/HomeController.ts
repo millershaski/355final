@@ -1,18 +1,16 @@
 import express, { Request, Response } from "express";
-import { Plant} from "../models/Old_Plant";
+import { Get404PageString} from "../FileTemplates";
+
 
 const router = express.Router();
 
-// displays all plants
-router.get("/", async (req: Request, resp: Response) =>
+// displays 404 page
+router.get("", async (req: Request, resp: Response) =>
 {
+    console.log("Here");
     try 
     {
-        const allPlants = await Plant.findAll();      
-        allPlants.forEach((somePlant) => somePlant.FixDates());  
-        const allPlainData = allPlants.map(obj => obj.GetAllHandlebarData()) // needed so that handlebars can correctly access the properties (otherwise we get "Access has been denied to resolve the property "species" because it is not an "own property" of its parent.")
-        
-        resp.render("allPlants", {plant: allPlainData});      
+        resp.status(404).send(Get404PageString());     
     } 
     catch (error) 
     {

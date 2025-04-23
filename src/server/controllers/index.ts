@@ -9,7 +9,7 @@ const registerRoutes = require("./RegisterController");
 const logoutRoutes = require("./LogoutController");
 
 
-router.use('/', homeRoutes);
+router.use('', homeRoutes);
 router.use("/project", projectRoutes);
 router.use("/task", taskRoutes);
 router.use("/user", userRoutes);

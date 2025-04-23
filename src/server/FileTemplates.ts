@@ -16,7 +16,7 @@ export function Get404PageString(): any
         <body>
             <h1>404 Not Found</h1>
             <p>Oops! The page you're looking for doesn't exist.</p>
-            <p>Try checking the URL or go back to the <a href="/">homepage</a>.</p>
+            <p>Try checking the URL or go back to the <a href="/project/1/">homepage</a>.</p>
         </body>
     </html>
     `;
