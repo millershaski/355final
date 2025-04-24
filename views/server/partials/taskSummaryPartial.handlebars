@@ -4,12 +4,11 @@
         <div class="d-flex justify-content-between">            
             <h5 class="card-title text-success"><a class = "taskName text-reset text-decoration-none" href = "#">{{name}}</a>&nbsp;&nbsp;&nbsp;<span class="badge bg-success">Completed</span></h5>
             <div class="text-end">
-                <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
+                <div class="d-flex align-items-center gap-2 justify-content-end">
                     <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
                     <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
-                </div>
-
-                <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>                    
+                    <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>   
+                </div>                 
             </div>
         </div>
         <div class="mb-3">
@@ -50,11 +49,11 @@
         <div class="d-flex justify-content-between">            
             <h5 class="card-title"><a class = "taskName text-reset text-decoration-none" href = "#">{{name}}</a></h5>
             <div class="text-end">
-                <div class="mb-1 d-flex align-items-center gap-2 justify-content-end">
+                <div class="d-flex align-items-center gap-2 justify-content-end">
                     <label for="dueDate{{id}}" class="form-label mb-0"><strong>Due Date:</strong></label>
                     <input type="date" class="form-control form-control-sm w-auto dueDate" id="dueDate{{id}}" value="{{dueDate}}">
-                </div>
-                <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>                    
+                    <div class="user-circle assigneeInitials" data-bs-toggle="modal" data-bs-target="#selectUserModal">{{assigneeInitials}}</div>   
+                </div>                 
             </div>
         </div>
         <div class="mb-3">
