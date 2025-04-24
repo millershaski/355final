@@ -99,26 +99,22 @@ async function ActivateExpandedTask(id)
     taskData.dataset.taskId = id;
 
     taskData.classList.remove("hidden");
-    PopulateExpandedTaskCardWith(id);
+    await PopulateExpandedTaskCardWith_async(id);
 }
 
 
 
-function GetIsCompleteFor(id)
+async function GetIsCompleteFor_async(id)
 {
-    const allParentCards = document.getElementsByClassName("parentTaskData" + id);
-    for(const parentCard of allParentCards)
-    {
-        if(parentCard.classList.contains("hidden") == false)
-            return parentCard.dataset.isCompleteVersion == "true";
-    }
+    return await FetchTaskValue(id, "isComplete");
 }
 
 
 
-function PopulateExpandedTaskCardWith(id)
+async function PopulateExpandedTaskCardWith_async(id)
 {
-    selectedActiveTaskData_ = {isComplete: GetIsCompleteFor(id)}
+    const isComplete = await GetIsCompleteFor_async(id)
+    selectedActiveTaskData_ = {isComplete: isComplete}
 
     const data = GetAllTaskJSONData(id);
 
@@ -252,10 +248,17 @@ function GetPassedElementTextContentOrValue(foundElement)
 
 function FindElement(parentElement, elementName)
 {
-    if(parentElement == null)
-        return document.getElementById(elementName);
-    else
-        return parentElement.querySelector("." + elementName);  
+    try
+    {
+        if(parentElement == null)
+            return document.getElementById(elementName);
+        else
+            return parentElement.querySelector("." + elementName);  
+    }
+    catch(error)
+    {
+        console.error(error);
+    }
 }
 
 
@@ -632,27 +635,27 @@ function InitializeAllMarkCompleteButtons()
 
 async function OnMarkCompleteClicked(id, newValue)
 {
-    UpdateTask(id, {isComplete:newValue}, false);
+    await UpdateTask(id, {isComplete:newValue}, false);
 
-    const taskData = GetTaskDataFromId(id)
-    if(taskData != null)
+    const allTaskData = document.getElementsByClassName("task"+id);
+    for(const taskData of allTaskData)
     {
         if(taskData.dataset.isSubtask == "true") 
-            RefreshIsCompleteOfSubtask(id, newValue);
+            RefreshIsCompleteOfSubtask(taskData, newValue);
         else 
             RefreshIsCompleteOfParentCard(id, newValue);
     }
 
     if(selectedActiveTaskId_ > 0) // repopulate if active (this covers subtasks too). Note that we'll be refreshing at times when we don't need to
-        PopulateExpandedTaskCardWith(selectedActiveTaskId_);
+        PopulateExpandedTaskCardWith_async(selectedActiveTaskId_);
 }
 
 
 
-function RefreshIsCompleteOfSubtask(id, newValue)
+function RefreshIsCompleteOfSubtask(taskData, newValue)
 {
     // subtasks just need to have their checkboxes changed
-    const checkbox = FindElement("markComplete");
+    const checkbox = FindElement(taskData, "markComplete");
     if(checkbox != null)
         checkbox.checked = newValue; // "change" event shouldn't be triggered with this
 }
@@ -717,7 +720,13 @@ async function RefreshElement(taskId, propertyName, className, expandedTaskId)
     {
         SetElementTextContentOrValue(newValue, taskData, className);
     }
-    
+
+    const allSubtaskData = document.getElementsByClassName("subtask" + taskId);
+    for(const subtaskData of allSubtaskData)
+    {
+        SetElementTextContentOrValue(newValue, subtaskData, className);
+    }
+
     if(selectedActiveTaskId_ == taskId) // also refresh the element in expandedTask
         SetElementTextContentOrValue(newValue, null, expandedTaskId);
 }
@@ -745,7 +754,6 @@ async function FetchTaskValue(taskId, propertyName)
 function SetElementTextContentOrValue(newValue, taskData, elementName)
 {
     const foundElement = FindElement(taskData, elementName); 
-
     if(foundElement != null)
     {
         if(foundElement.value != null && foundElement.value != undefined)

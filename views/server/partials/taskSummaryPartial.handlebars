@@ -1,5 +1,5 @@
 
-<div class="card mb-3 border-success taskData parentTaskData{{id}} {{#if isComplete}} {{else}}hidden{{/if}}" id = "taskData{{id}}" data-task-id={{id}} data-is-complete-version="true">
+<div class="card mb-3 border-success taskData task{{id}} parentTaskData{{id}} {{#if isComplete}} {{else}}hidden{{/if}}" id = "taskData{{id}}" data-task-id={{id}} data-is-complete-version="true">
     <div class="card-body">
         <div class="d-flex justify-content-between">            
             <h5 class="card-title text-success"><a class = "taskName text-reset text-decoration-none" href = "#">{{name}}</a>&nbsp;&nbsp;&nbsp;<span class="badge bg-success">Completed</span></h5>
@@ -20,7 +20,7 @@
             <ul class="list-group">
                 {{#each allSubtasks}}
                     <li class="list-group-item">
-                        <div class="form-check taskData d-flex align-items-center" id = "taskData{{id}}" data-task-id={{id}} data-is-subtask="true">
+                        <div class="form-check taskData d-flex align-items-center subtask{{id}} task{{id}}" id = "taskData{{id}}" data-task-id={{id}} data-is-subtask="true">
                             <input class="form-check-input me-2 mb-1 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
                             <label class="form-check-label w-100">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -44,7 +44,7 @@
     </div>
 </div>
    
-<div class="card mb-3 taskData parentTaskData{{id}} {{#if isComplete}} hidden{{/if}}" id = "taskData{{id}}" data-task-id={{id}} data-is-complete-version="false">
+<div class="card mb-3 taskData task{{id}} parentTaskData{{id}} {{#if isComplete}} hidden{{/if}}" id = "taskData{{id}}" data-task-id={{id}} data-is-complete-version="false">
     <div class="card-body">
         <div class="d-flex justify-content-between">            
             <h5 class="card-title"><a class = "taskName text-reset text-decoration-none" href = "#">{{name}}</a></h5>
@@ -65,7 +65,7 @@
             <ul class="list-group">
                 {{#each allSubtasks}}
                     <li class="list-group-item">
-                        <div class="form-check taskData d-flex align-items-center" id = "taskData{{id}}" data-task-id={{id}} data-is-subtask="true">
+                        <div class="form-check taskData d-flex align-items-center subtask{{id}} task{{id}}" id = "taskData{{id}}" data-task-id={{id}} data-is-subtask="true">
                             <input class="form-check-input me-2 mb-1 markComplete" type="checkbox" value="" {{#if isComplete}}checked{{/if}} data-is-complete={{#if isComplete}}"true"{{else}}"false"{{/if}}>
                             <label class="form-check-label w-100">
                                 <div class="d-flex justify-content-between align-items-center">
