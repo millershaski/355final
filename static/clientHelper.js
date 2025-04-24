@@ -712,10 +712,12 @@ async function RefreshElement(taskId, propertyName, className, expandedTaskId)
     if(newValue == null || newValue == undefined)
         return;
 
-    const taskData = GetTaskDataFromId(taskId);
-    if(taskData != null)
+    const allTaskData = document.getElementsByClassName("parentTaskData" + taskId);
+    for(const taskData of allTaskData)
+    {
         SetElementTextContentOrValue(newValue, taskData, className);
-
+    }
+    
     if(selectedActiveTaskId_ == taskId) // also refresh the element in expandedTask
         SetElementTextContentOrValue(newValue, null, expandedTaskId);
 }
