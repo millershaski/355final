@@ -7,10 +7,10 @@ const router = express.Router();
 // displays 404 page
 router.get("", async (req: Request, resp: Response) =>
 {
-    console.log("Here");
     try 
     {
-        resp.status(404).send(Get404PageString());     
+        resp.redirect("/project/1");
+        //resp.status(404).send(Get404PageString());     
     } 
     catch (error) 
     {
