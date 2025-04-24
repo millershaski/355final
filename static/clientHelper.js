@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () =>
     InitializeAllExpandedTaskButtons();
     InitializeAllSaveButtons();
     InitializeAllDeleteButtons();
+    InitializeCreateProjectButton();
     InitializeAddTaskButton();
     InitializeAddUserButton();
     InitializeAllSelectAssigneeButtons();
@@ -341,6 +342,30 @@ async function OnDeleteConfirmed()
 function ForceRefresh()
 {
     location.reload(); 
+}
+
+
+
+function InitializeCreateProjectButton()
+{
+    const createProjectButton = document.getElementById("createProjectButton");
+    if(createProjectButton != null)
+        createProjectButton.onclick = CreateProject;
+}
+
+
+
+async function CreateProject()
+{
+    const targetUrl = window.location.origin + "/project/";
+    await fetch(targetUrl,
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}) 
+    });
+    
+    ForceRefresh();
 }
 
 
